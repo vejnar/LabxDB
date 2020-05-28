@@ -1,0 +1,47 @@
+{
+  "admin": {
+    "disabled": true
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "labxdb": {
+          "listen": [":443"],
+          "routes": [
+            {
+              "match": [{
+                "host": ["labxdb.duckdns.org"]
+              }],
+              "handle": [{
+                "handler": "authentication",
+                "providers": {
+                  "http_basic": {
+                    "accounts": [{
+                      "username": "labxdb",
+                      "password": "JDJhJDEwJHhmWHcuaXpndGJFNHI4VWtudTR4aXVGWThLOEdGbmFXc0VnakY3cEVEMWVRam4xWFBEM1d5"
+                    }]
+                  }
+                }
+              }, {
+                "handler": "reverse_proxy",
+                "upstreams": [{
+                  "dial": "127.0.0.1:8081"
+                }]
+              }]
+            }
+          ]
+        }
+      }
+    },
+    "tls": {
+      "automation": {
+        "policies": [{
+            "issuer": {
+              "module": "acme",
+              "ca": "https://acme-staging-v02.api.letsencrypt.org/directory"
+            }
+        }]
+      }
+    }
+  }
+}

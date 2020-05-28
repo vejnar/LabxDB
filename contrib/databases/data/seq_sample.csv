@@ -1,0 +1,3 @@
+sample_id,sample_ref,project_ref,label_short,label_long,species,strain_maternal,strain_paternal,genotype,ploidy,age_hpf,stage,tissue,condition,treatment,selection,molecule,library_protocol,adapter_5p,adapter_3p,track_priority,track_color,sra_ref,notes
+574,AGS000574,AGP000065,WT 64c pA,WT 64c pA,danRer,,,WT,2n,2,64-cell,,,,pA,RNA,dUTP,,TruSeq Index,20,Blue4,,total RNA was spiked with 5% S.cerevisiae total RNA
+940,AGS000940,AGP000119,WT 64c pA r3,WT 64c pA r3,danRer,,,WT,2n,2,64-cell,,,500utr,pA,RNA,dUTP,TruSeq Universal,TruSeq Index,,,,

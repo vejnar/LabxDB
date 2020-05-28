@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+/* Form */
+
+.table-form {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin: 1.6em;
+}
+.record-row-form {
+    display: flex;
+    flex-flow: row wrap;
+    padding-bottom: 0.5em;
+    margin-left: 2em;
+    margin-right: 6em;
+}
+.record-cell-form {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+.form-head {
+    background-color: rgb(210, 210, 210);
+}
+.seq-text {
+    width: 28em;
+    height: 10em;
+}
+
+/* Batch */
+
+.query-data {
+    width: 40em;
+    height: 15em;
+}
+.query-table {
+    border-spacing: 0;
+}
+.query-table td, .query-table th {
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+}
+.query-table td + td {
+    border-left: 1px solid rgb(5, 125, 161);
+}
+.null-value {
+    font-style: italic;
+}
+
+/* Modal */
+
+.modal-dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+    text-align: center;
+    vertical-align: middle;
+}
+.modal-dialog > div {
+    display: inline-block;
+    top: 45vh;
+    position: relative;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-radius: 2px;
+    background: #fff;
+    background: linear-gradient(#fff, #999);
+}
+.modal-dialog > div div {
+    margin-right: 0.5em;
+}
+.modal-dialog > div input {
+    margin-right: 0.5em;
+}

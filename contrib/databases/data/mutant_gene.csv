@@ -1,0 +1,2 @@
+gene_id,last_modif,gene_name,mutant_name,ensembl_id,author_initials,maintainer_initials,terminated,date_insert,note,interest,injected,f1_embryo,f1_hetero,f2_homo,phenotype_zygotic,phenotype_mz,target_strategy,edit_enzyme,grna_seq_tested,grna_seq_working,target_seq,template_oligo,template_plasmid,oligo_f0_fw,oligo_f0_rv,genomic_wt_seq,zfin_ref
+1,,ago2,,ENSDARG00000061268,XXX,XXX,f,2018-12-01,,,t,t,t,t,,,Large deletion,Cas9,,,,,,,,,

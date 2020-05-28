@@ -1,0 +1,204 @@
+@charset "UTF-8";
+
+/* Board */
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 100%;
+}
+.record-table-container {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+    margin-bottom: 0.6em;
+}
+.record-table-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    opacity: 1;
+    z-index: 99;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+.record-table-toolbar {
+    margin-left: auto;
+    margin-right: 3%;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+}
+.record-row-container {
+    position: relative;
+}
+.record-table .record-row-control {
+    position: absolute;
+    margin-top: 0.75em;
+    margin-left: -0.9em;
+    color: white;
+    cursor: default;
+    transition: .3s;
+    transform-origin: 50% 40%;
+}
+.record-row {
+    display: flex;
+    flex-flow: row wrap;
+    padding-left: 0.2em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+.record-row.toolbar {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    justify-content: flex-end;
+}
+.record-row.data {
+    background-color: white;
+    animation: showBlock 400ms ease-in-out both;
+}
+.toolbar-head {
+    flex: 1;
+    font-weight: bold;
+    padding-top: 0.6em;
+    padding-left: 0.3em;
+    color: white;
+}
+
+@keyframes showBlock {
+    from {visibility: 0;}
+    to   {visibility: 1;}
+}
+.record-table .record-block {
+    animation: showBlock 400ms ease-in-out both;
+}
+.record-table .record-block.level0 {
+    border-left: 1.2em solid rgb(199,101,129);
+}
+.record-table .record-block.level1 {
+    border-left: 1.2em solid rgb(153,193,216);
+}
+.record-table .record-block.level2 {
+    border-left: 1.2em solid rgb(116,135,123);
+}
+.record-table .record-block.level3 {
+    border-left: 1.2em solid rgb(241,196,129);
+}
+.record-table .record-row.toolbar.level0 {
+    background-color: rgb(199,101,129);
+}
+.record-table .record-row.toolbar.level1 {
+    background-color: rgb(153,193,216);
+}
+.record-table .record-row.toolbar.level2 {
+    background-color: rgb(116,135,123);
+}
+.record-table .record-row.toolbar.level3 {
+    background-color: rgb(241,196,129);
+}
+.record-cell {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-right: solid 2px rgb(230,230,230);
+}
+.record-cell:last-child {
+    border: 0;
+}
+.record-cell-title {
+    font-size: 75%;
+}
+.cell {
+    max-width: 20em;
+    max-height: 4em;
+    word-wrap: break-word;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    padding-bottom: 0.5em;
+}
+
+.shtable-container {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    margin-bottom: 0.6em;
+}
+.shtable {
+    border-spacing: 0;
+    width: 100%;
+}
+.shtable-header > th {
+    position: sticky;
+    top : 0;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    color: white;
+    border-left: 1px solid rgb(210, 210, 210);
+    background-color: rgb(5, 125, 161);
+    text-align: center;
+    vertical-align: middle;
+    z-index: 1;
+}
+.shtable td, .shtable th {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+.shtable tr:nth-child(even) {
+    background: rgb(210, 210, 210);
+}
+.shtable tr:nth-child(odd) {
+    background: rgb(255, 255, 255);
+}
+.shtable td + td {
+    border-left: 1px solid rgb(210, 210, 210);
+}
+.shtable .cell {
+    max-width: 30em;
+    word-wrap: break-word;
+}
+.shtable .button {
+    padding-top: 0em;
+    padding-bottom: 0em;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+}
+.shtable .anchor {
+    display: block;
+    height: 5em;
+    margin-top: -5em;
+    visibility: hidden;
+}
+
+/* Tooltip */
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    z-index: auto;
+    cursor: pointer;
+}
+.tooltip .tooltipimg {
+    visibility: hidden;
+    background-color: white;
+    border-radius: 6px;
+    padding: 6px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-top: 1em;
+    margin-left: -30em;
+}
+.tooltip:hover .tooltipimg {
+    visibility: visible;
+}
+.tooltip .tooltipimg > img {
+    max-width: 40em;
+    vertical-align: middle;
+}

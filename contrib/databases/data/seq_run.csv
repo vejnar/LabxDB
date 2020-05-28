@@ -1,0 +1,5 @@
+run_id,run_ref,run_order,replicate_ref,tube_label,barcode,second_barcode,request_ref,request_date,failed,flowcell,platform,quality_scores,directional,paired,r1_strand,spots,max_read_length,sra_ref,notes
+836,AGR000836,1,AGN000644,9_001,ATCACG,,RQ2160,2013-12-17,f,HWI-ST830:248:C38M5ACXX,Illumina HiSeq 2000,Illumina 1.8,t,t,-,16170667,76,,total RNA was spiked with 5% S.cerevisiae total RNA
+837,AGR000837,1,AGN000645,10_002,CGATGT,,RQ2160,2013-12-17,f,HWI-ST830:248:C38M5ACXX,Illumina HiSeq 2000,Illumina 1.8,t,t,-,17393340,76,,total RNA was spiked with 5% S.cerevisiae total RNA
+1455,AGR001455,1,AGN001060,WT_64c_a,ATCACG,,RQ3013,2014-11-13,f,HWI-D00306:483:HBEMNADXX,Illumina HiSeq 2000,Illumina 1.8,t,t,-,3494060,76,,
+1456,AGR001456,1,AGN001061,WT_64_b,CGATGT,,RQ3013,2014-11-13,f,HWI-D00306:483:HBEMNADXX,Illumina HiSeq 2000,Illumina 1.8,t,t,-,4766108,76,,

@@ -1,0 +1,52 @@
+{% extends "default.jinja" %}
+
+{% block header %}
+{{ header.links(base_url, css_files=['css/default.css', 'css/toolbar.css', 'css/board.css'], js_files=[]) }}
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+
+{% include 'toolbar.jinja' %}
+
+<div class="shtable-container">
+  <div class="record-table-overlay">
+    <img class="record-table-loader" id="loader" src="{{ base_url }}/static/img/spin.gif">
+  </div>
+  <table id="shtable" class="shtable">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+</div>
+
+<script type="module">
+import { addLoadEvent } from '{{ base_url }}/static/js/utils.js'
+import { {{ board_class }} } from '{{ base_url }}/static/{{ board_path }}'
+import { Toolbar } from '{{ base_url }}/static/js/toolbar.js'
+
+function init() {
+    let columns = {{ columns|safe }}
+    let column_infos = {{ column_infos|safe }}
+    let search_criterions = {{ search_criterions|safe }}
+    let sort_criterions = {{ sort_criterions|safe }}
+    let limits = {{ limits|safe }}
+    let levels = {{ levels|safe }}
+    let level_infos = {{ level_infos|safe }}
+    let level = levels[0]
+    let baseURL = "{{ base_url|safe }}"
+    // Board
+    window.board = new {{ board_class }}(document.getElementById("shtable"), document.getElementById("loader"), columns[level], column_infos[level], level, level_infos[level], baseURL)
+    // Toolbar
+    window.toolbar = new Toolbar(document.getElementById("main-toolbar"), columns, column_infos, levels, level_infos, baseURL)
+    window.toolbar.initSearchCriterions(search_criterions)
+    window.toolbar.initSortCriterions(sort_criterions)
+    window.toolbar.initLimit(limits)
+    // Load default
+    window.board.getRecords(document.getElementById("main-toolbar-form"))
+}
+
+addLoadEvent(init)
+</script>
+{% endblock %}

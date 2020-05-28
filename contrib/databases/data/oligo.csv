@@ -1,0 +1,4 @@
+item_id,oligo_number,number_suffix,name,description,sequence,author,date_insert,date_order,status
+1,1,,sgrna1_ago,,AAAAAA,Andrew,2018-11-10,2018-11-11,ordered
+2,2,,ago_genotyping1,,CCCCCC,Henry,2018-11-15,2018-11-16,ordered
+3,3,,sgrna2_ago,,GGGGGG,Andrew,2018-12-01,,to order

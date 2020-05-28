@@ -1,0 +1,2 @@
+allele_id,gene_id,name,seq,genotyping_oligo,genotyping_strategy,commercial,terminated
+1,1,ago2-del,,,PCR,f,f

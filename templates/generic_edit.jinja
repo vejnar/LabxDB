@@ -1,0 +1,34 @@
+{% extends "default.jinja" %}
+
+{% block header %}
+{{ header.links(base_url, css_files=['css/default.css', 'css/form.css', 'css/'+name+'_form.css'], js_files=[]) }}
+{% endblock %}
+
+{% block content %}
+<div id="modal-dialog" class="modal-dialog"><div id="modal-dialog-window"></div></div>
+<table id="main-form" class="table-form"></table>
+
+<script type="module">
+import { addLoadEvent } from '{{ base_url }}/static/js/utils.js'
+import { {{ form_class }} } from '{{ base_url }}/static/{{ form_path }}'
+
+{% set js_path = 'js/'+ name +'/addon.js' %}
+{% if js_path is path_exists %}
+import { addonStart } from '{{ base_url }}/static/js/{{ name }}/addon.js'
+{% else %}
+let addonStart = null
+{% endif %}
+
+function init() {
+    let column_infos = {{ column_infos|safe }}
+    let levels = {{ levels|safe }}
+    let level_infos = {{ level_infos|safe }}
+    let level = levels[0]
+    let baseURL = "{{ base_url|safe }}"
+    // Form
+    window.form = new {{ form_class }}(document.getElementById("main-form"), document.getElementById("modal-dialog"), document.getElementById("modal-dialog-window"), {{ name|tojson }}, {{ form|safe }}, column_infos[level], baseURL, level_infos[level], {{ only_changes }}, {{ query_args|tojson }}, addonStart)
+}
+
+addLoadEvent(init)
+</script>
+{% endblock %}

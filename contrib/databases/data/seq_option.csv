@@ -1,0 +1,212 @@
+option_id,group_name,option
+1,species,caeEle
+2,species,danRer
+3,species,droMel
+4,species,escCol
+5,species,homSap
+6,species,lolPea
+7,species,musMus
+8,species,oryLat
+9,species,sacCer
+10,species,xenTro
+11,ploidy,1n
+12,ploidy,2n
+13,ploidy,n
+14,age_hpf,0
+15,age_hpf,0.2
+16,age_hpf,0.5
+17,age_hpf,0.66
+18,age_hpf,0.75
+19,age_hpf,1
+20,age_hpf,1.5
+21,age_hpf,2
+22,age_hpf,2.25
+23,age_hpf,2.5
+24,age_hpf,2.75
+25,age_hpf,3
+26,age_hpf,3.17
+27,age_hpf,3.3
+28,age_hpf,3.5
+29,age_hpf,3.6
+30,age_hpf,3.7
+31,age_hpf,4
+32,age_hpf,4.3
+33,age_hpf,4.5
+34,age_hpf,4.66
+35,age_hpf,4.7
+36,age_hpf,5
+37,age_hpf,6
+38,age_hpf,6.5
+39,age_hpf,7
+40,age_hpf,7.5
+41,age_hpf,8
+42,age_hpf,8.3
+43,age_hpf,9
+44,age_hpf,10
+45,age_hpf,11
+46,age_hpf,12
+47,age_hpf,13
+48,age_hpf,16
+49,age_hpf,17.5
+50,age_hpf,24
+51,age_hpf,25
+52,age_hpf,27
+53,age_hpf,28
+54,age_hpf,30
+55,age_hpf,32
+56,age_hpf,36
+57,age_hpf,48
+58,age_hpf,51
+59,age_hpf,60
+60,age_hpf,72
+61,age_hpf,96
+62,stage,10-somite
+64,stage,128-cell
+65,stage,128cell-256cell
+66,stage,14-19 somites
+67,stage,14-somite
+68,stage,16-cell
+69,stage,17-somite
+70,stage,1-cell
+71,stage,1k-cell
+72,stage,2-4c
+73,stage,2-4dpf
+74,stage,24h
+75,stage,256-cell
+76,stage,26-somites
+77,stage,2-cell
+78,stage,30%-epiboly
+79,stage,32-cell
+80,stage,40%-epiboly
+81,stage,4-cell
+82,stage,50%-epiboly
+83,stage,512-cell
+84,stage,64-cell
+85,stage,6-somites
+86,stage,72h
+87,stage,75%-epiboly
+88,stage,80%-epiboly
+89,stage,8-cell
+90,stage,90%-epiboly
+91,stage,adult
+92,stage,Blastocyst
+93,stage,blastula
+94,stage,bud
+95,stage,Day 4
+96,stage,Day 5
+97,stage,Day 6
+98,stage,dome
+99,stage,embryo
+100,stage,high
+101,stage,high/sphere
+102,stage,larva
+103,stage,Long-pec
+104,stage,MIIegg
+105,stage,morula
+106,stage,Morula
+107,stage,oblong
+108,stage,oblong-sphere
+109,stage,oocyte
+110,stage,Prim-15
+111,stage,Prim-22
+112,stage,Prim-25
+113,stage,Prim-5
+114,stage,Prim-6
+115,stage,pronuclei
+116,stage,Protruding-mouth
+117,stage,pupa
+118,stage,s10
+119,stage,s10.5
+120,stage,s11
+121,stage,s12
+122,stage,s8
+123,stage,s9
+124,stage,shield
+125,stage,sperm
+126,stage,sphere
+127,stage,Stage11
+128,stage,unfertilized
+166,selection,pA
+173,selection,r0
+178,selection,size
+185,library_protocol,cDNA
+186,library_protocol,DNA
+187,library_protocol,dUTP
+188,library_protocol,RNA
+189,library_protocol,sRNA
+190,molecule,DNA
+191,molecule,in vitro transcripts
+192,molecule,iresseq_library
+193,molecule,mRNA
+194,molecule,RNA
+195,molecule,RPF
+196,molecule,tRNA
+197,adapter_5p,10X Chromium Single-cell v2
+198,adapter_5p,ACAGTG
+199,adapter_5p,ATCACG
+200,adapter_5p,CGATGT
+201,adapter_5p,CTTGTA
+202,adapter_5p,GCCAAT
+203,adapter_5p,GGCTAC
+204,adapter_5p,sRNA_1493
+205,adapter_5p,structure-seq 5N
+206,adapter_5p,TAGCTT
+207,adapter_5p,TGACCA
+208,adapter_5p,TruSeq D501 Index
+209,adapter_5p,Truseq Index
+210,adapter_5p,TruSeq Universal
+211,adapter_5p,TTAGGC
+212,adapter_3p,BL1 3' Non-multiplex
+213,adapter_3p,QuantSeq Fwd Index
+214,adapter_3p,Solexa P3
+215,adapter_3p,sRNA 1.0
+216,adapter_3p,sRNA 1.5
+217,adapter_3p,sRNA alt1
+218,adapter_3p,TruSeq-10N Index
+219,adapter_3p,TruSeq-DMS+A Index
+220,adapter_3p,TruSeq-DMS Index
+221,adapter_3p,TruSeq Index
+222,adapter_3p,TruSeq-IRES Index
+223,track_color,Blue0
+224,track_color,Blue1
+225,track_color,Blue2
+226,track_color,Blue3
+227,track_color,Blue4
+228,track_color,Blue5
+229,track_color,Green1
+230,track_color,Green2
+231,track_color,Green3
+232,track_color,Green4
+233,track_color,Green5
+234,track_color,Indigo1
+235,track_color,Indigo2
+236,track_color,Indigo3
+237,track_color,Indigo4
+238,track_color,Indigo5
+239,track_color,Orange1
+240,track_color,Orange2
+241,track_color,Orange3
+242,track_color,Orange4
+243,track_color,Orange5
+244,track_color,Orange6
+245,track_color,Violet1
+246,track_color,Violet2
+247,track_color,Violet3
+248,track_color,Violet4
+249,track_color,Violet5
+250,platform,Illumina
+251,platform,Illumina Genome Analyzer II
+252,platform,Illumina Genome Analyzer IIx
+253,platform,Illumina HiSeq 2000
+254,platform,Illumina HiSeq 2500
+255,platform,Illumina MiSeq
+256,quality_scores,Illumina 1.3
+257,quality_scores,Illumina 1.5
+258,quality_scores,Illumina 1.8
+259,r1_strand,+
+260,r1_strand,-
+261,r1_strand,u
+268,selection,None
+269,ploidy,None
+271,ploidy,none
+275,adapter_3p,TruSeq Universal

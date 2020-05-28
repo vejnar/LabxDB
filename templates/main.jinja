@@ -1,0 +1,82 @@
+{% extends "default.jinja" %}
+
+{% block header %}
+{{ header.links(base_url, css_files=['css/default.css', 'css/main.css'], js_files=[]) }}
+{% endblock %}
+
+{% block content %}
+<div class="home">
+  <div class="home-block">
+    <div class="home-head">Sequencing</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="seq/project">Project</a></li>
+      <li><a class="home-link" href="seq/sample">Sample</a></li>
+      <li><a class="home-link" href="seq/replicate">Replicate</a></li>
+      <li><a class="home-link" href="seq/run">Run</a></li>
+      <li><a class="home-link" href="seq/tree">Tree view</a></li>
+      <li><a class="home-link" href="seq/assign">New runs</a></li>
+      <li><a class="home-link" href="seq/publication">Publications</a></li>
+      <li><a class="home-link" href="seq/option">Options</a></li>
+    </ul>
+  </div>
+
+  <div class="home-block">
+    <div class="home-head">Oligo</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="oligo/table">Table</a></li>
+      <li><form action="oligo/new" method="get">
+            <input id="count" name="count" class="short_input" type="text" spellcheck="false" required pattern="[0-9]+" value="1">
+            <button class="home-link" type="submit">New oligo</button>
+          </form></li>
+      <li><a class="home-link" href="oligo/batch">Batch query</a></li>
+      <li><a class="home-link" href="oligo/option">Options</a></li>
+    </ul>
+  </div>
+
+  <div class="home-block">
+    <div class="home-head">Plasmid</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="plasmid/table">Table</a></li>
+      <li><form action="plasmid/new" method="get">
+            <input id="count" name="count" class="short_input" type="text" spellcheck="false" required pattern="[0-9]+" value="1">
+            <button class="home-link" type="submit">New plasmid</button>
+          </form></li>
+      <li><a class="home-link" href="plasmid/batch">Batch query</a></li>
+      <li><a class="home-link" href="plasmid/option">Options</a></li>
+    </ul>
+  </div>
+
+  <div class="home-block">
+    <div class="home-head">Order</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="order/table">Table</a></li>
+      <li><a class="home-link" href="order/new">New order</a></li>
+      <li><a class="home-link" href="order/option">Options</a></li>
+    </ul>
+  </div>
+
+  <div class="home-block">
+    <div class="home-head">Fish</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="fish/table">Table</a></li>
+      <li><form action="fish/new" method="get">
+            <input id="count" name="count" class="short_input" type="text" spellcheck="false" required pattern="[0-9]+" value="1">
+            <button class="home-link" type="submit">New fish line</button>
+          </form></li>
+      <li><a class="home-link" href="fish/option">Options</a></li>
+    </ul>
+  </div>
+
+  <div class="home-block">
+    <div class="home-head">Mutant</div>
+    <ul class="home-links">
+      <li><a class="home-link" href="mutant/gene">Gene</a></li>
+      <li><a class="home-link" href="mutant/allele">Allele</a></li>
+      <li><a class="home-link" href="mutant/tree">Tree view</a></li>
+      <li><a class="home-link" href="mutant/gene/new">New gene</a></li>
+      <li><a class="home-link" href="mutant/option">Options</a></li>
+    </ul>
+  </div>
+
+</div>
+{% endblock %}

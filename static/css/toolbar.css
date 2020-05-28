@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/* Toolbar */
+
+.main-toolbar-container {
+    flex: none;
+}
+.main-toolbar {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    padding-top: 2em;
+    padding: 2em;
+}
+.control-form {
+    display: table;
+}
+.control {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    margin-bottom: 0.6em;
+}
+.control-input {
+    vertical-align: top;
+    padding-right: 2.5em;
+    border-left: 1px solid rgb(1, 57, 72);
+}
+.control-spacer {
+    padding-right: 2.5em;
+}
+.control-title {
+    padding-left: 0.2em;
+    padding-bottom: 0.4em;
+    font-style: italic;
+}
+.control-search-sort {
+    margin-top: 0.3em;
+}
+.control-search-sort-criterion {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid black;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+    margin-top: 0.3em;
+    margin-right: 0.2em;
+}
+.control-search-sort-criterion .button {
+    padding: 0;
+    margin-right: 0;
+}
+.button-label {
+    display: inline-block;
+    padding-left: 0.2em;
+}

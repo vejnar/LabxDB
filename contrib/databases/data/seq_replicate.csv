@@ -1,0 +1,5 @@
+replicate_id,replicate_ref,replicate_order,sample_ref,label_short,label_long,sra_ref,publication_ref,notes
+650,AGN000644,1,AGS000574,WT 64c pA B1,WT 64c pA B1,,,
+651,AGN000645,2,AGS000574,WT 64c pA B2,WT 64c pA B2,,,
+1093,AGN001060,1,AGS000940,WT 64c pA r3 B1,WT 64c pA r3 B1,,,
+1094,AGN001061,2,AGS000940,WT 64c pA r3 B2,WT 64c pA r3 B2,,,

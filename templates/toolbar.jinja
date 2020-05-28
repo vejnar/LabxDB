@@ -1,0 +1,45 @@
+<div class="main-toolbar-container">
+<div id="main-toolbar" class="main-toolbar">
+  <form id="main-toolbar-form" class="control-form">
+  <div class="control">
+    <a class="button" href="..">Home</a>
+  </div>
+  <div id="new_record" class="control control-spacer"></div>
+
+  <div class="control control-input">
+    <div class="control-title">Search</div>
+    <input id="search_text" name="search_text" type="text" spellcheck="false" onkeypress="toolbar.keyPressSearch(event)">
+    <select id="search_column" name="search_column"></select>
+    <select id="search_type" name="search_type">
+      <option value="FUZZY">Fuzzy</option>
+      <option value="EQUAL">Equal</option>
+    </select>
+    <button class="button" type="button" onclick="toolbar.addSearchCriterion()">Add</button>
+    <div id="control-search" class="control-search-sort"></div>
+  </div>
+  <div class="control control-input">
+    <div class="control-title">Sort</div>
+    <select id="sort_column" name="sort_column"></select>
+    <select id="sort_order" name="sort_order">
+      <option value="ASC">Asc (lower first)</option>
+      <option value="DESC">Desc (higher first)</option>
+    </select>
+    <button class="button" type="button" onclick="toolbar.addSortCriterion()">Add</button>
+    <div id="control-sort" class="control-search-sort"></div>
+  </div>
+  <div class="control control-input">
+    <div class="control-title">Limit</div>
+    <select id="limit" name="limit"></select>
+  </div>
+  <div class="control">
+    <button class="button" type="submit" onclick="window.board.getRecords(this.form); return false;">Apply</button>
+  </div>
+  <div class="control">
+    <button class="button" type="submit" onclick="window.board.exportData(); return false;">Export</button>
+  </div>
+  <div class="control">
+    <a class="button" href="javascript:window.location.href = window.location.href.split(/\?|#/)[0];">Reset</a>
+  </div>
+  </form>
+</div>
+</div>
