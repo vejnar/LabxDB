@@ -12,8 +12,6 @@ if [ -z "$TARGET" ]; then
     TARGET="/root/labxdb-python"
 fi
 
-cd $TARGET
-
 if [ "$NAME" = "Arch Linux" ] ; then
     pacman -Sy --noconfirm zstd wget squashfs-tools
 fi
@@ -21,6 +19,10 @@ if [ "$NAME" = "Debian GNU/Linux" ] || [ "$NAME" = "Ubuntu" ]; then
     apt-get update
     apt-get install -y zstd wget squashfs-tools
     apt-get clean
+fi
+
+if [ ! -d "$TARGET" ]; then
+    mkdir $TARGET
 fi
 
 cd $TARGET
