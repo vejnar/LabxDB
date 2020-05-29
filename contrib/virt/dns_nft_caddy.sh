@@ -62,12 +62,13 @@ Description=Caddy
 After=network.target network-online.target nss-lookup.target
 
 [Service]
-Type=notify
 Environment=XDG_DATA_HOME=/etc
 Environment=XDG_CONFIG_HOME=/etc
 ExecStart=/usr/local/bin/caddy run --config /etc/caddy/caddy.json
 Restart=always
-WatchdogSec=1s
+# Graceful shutdown
+KillSignal=SIGQUIT
+TimeoutStopSec=5s
 
 [Install]
 WantedBy=multi-user.target
