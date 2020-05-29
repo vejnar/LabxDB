@@ -29,7 +29,7 @@ cd $TARGET
 
 # Get latest tag
 if [ -z "$LABXDB_PYTHON_TAG" ]; then
-    LABXDB_PYTHON_TAG=$(wget -qO- https://gitlab.com/api/v4/projects/19019522/repository/tags | cut -d '"' -f 4)
+    LABXDB_PYTHON_TAG=$(wget -qO- https://gitlab.com/api/v4/projects/19037512/repository/tags | cut -d '"' -f 4)
     echo "Found tag $LABXDB_PYTHON_TAG"
 fi
 wget --no-verbose "https://gitlab.com/vejnar/labxdb-python/-/archive/$LABXDB_PYTHON_TAG/labxdb-python-$LABXDB_PYTHON_TAG.tar.gz"
