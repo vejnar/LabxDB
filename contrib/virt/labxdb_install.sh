@@ -71,6 +71,8 @@ psql -U postgres -c "\COPY mutant.gene FROM '../data/mutant_gene.csv' DELIMITER 
 psql -U postgres -c "\COPY mutant.allele FROM '../data/mutant_allele.csv' DELIMITER ',' CSV HEADER; SELECT setval('mutant.allele_allele_id_seq', max(allele_id)) FROM mutant.allele;"
 psql -U postgres -c "\COPY mutant.option FROM '../data/mutant_option.csv' DELIMITER ',' CSV HEADER; SELECT setval('mutant.option_option_id_seq', max(option_id)) FROM mutant.option;"
 
+./tpl_sql.py -s -a schema,fish -u postgres create_fish_tables.sql
+
 ./tpl_sql.py -s -a schema,oligo -u postgres create_oligo_tables.sql
 psql -U postgres -c "\COPY oligo.item FROM '../data/oligo.csv' DELIMITER ',' CSV HEADER; SELECT setval('oligo.item_item_id_seq', max(item_id)) FROM oligo.item;"
 psql -U postgres -c "\COPY oligo.option FROM '../data/oligo_option.csv' DELIMITER ',' CSV HEADER; SELECT setval('oligo.option_option_id_seq', max(option_id)) FROM oligo.option;"
@@ -78,6 +80,9 @@ psql -U postgres -c "\COPY oligo.option FROM '../data/oligo_option.csv' DELIMITE
 ./tpl_sql.py -s -a schema,purchase -u postgres create_order_tables.sql
 psql -U postgres -c "\COPY purchase.item FROM '../data/order.csv' DELIMITER ',' CSV HEADER; SELECT setval('purchase.item_item_id_seq', max(item_id)) FROM purchase.item;"
 psql -U postgres -c "\COPY purchase.option FROM '../data/order_option.csv' DELIMITER ',' CSV HEADER; SELECT setval('purchase.option_option_id_seq', max(option_id)) FROM purchase.option;"
+
+./tpl_sql.py -s -a schema,plasmid -u postgres create_plasmid_tables.sql
+psql -U postgres -c "\COPY plasmid.item FROM '../data/plasmid.csv' DELIMITER ',' CSV HEADER; SELECT setval('plasmid.item_item_id_seq', max(item_id)) FROM plasmid.item;"
 
 ./tpl_sql.py -s -a schema,seq -u postgres create_seq_tables.sql
 psql -U postgres -c "\COPY seq.project FROM '../data/seq_project.csv' DELIMITER ',' CSV HEADER; SELECT setval('seq.project_project_id_seq', max(project_id)) FROM seq.project;"
