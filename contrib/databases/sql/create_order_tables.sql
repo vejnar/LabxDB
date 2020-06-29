@@ -17,6 +17,7 @@ CREATE TABLE {schema}.item (
     manufacturer varchar(255),
     manufacturer_ref varchar(255),
     funding varchar(255),
+    url varchar(255),
     PRIMARY KEY (item_id));
 
 CREATE TABLE {schema}.option (

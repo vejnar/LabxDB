@@ -42,7 +42,8 @@ class OrderBaseHandler(base.BaseHandler):
                      'date_order': {'search_type': 'equal_date', 'gui_type': 'text', 'required': False, 'pattern': '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]', 'label': 'Order', 'tooltip': '', 'button': {'label': 'Today', 'click': 'order_today_status'}},
                      'manufacturer': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'Manufacturer', 'tooltip': ''},
                      'manufacturer_ref': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'Manufacturer ref', 'tooltip': ''},
-                     'funding': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'Funding', 'tooltip': ''}}]
+                     'funding': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'Funding', 'tooltip': ''},
+                     'url': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'URL', 'tooltip': ''}}]
     column_infos_json = json.dumps(column_infos)
 
     column_titles = []
@@ -84,7 +85,7 @@ class OrderHandler(generic.GenericHandler, OrderBaseHandler):
     default_sort_criterions = [[0, 'date_order', 'DESC', 'Order'], [0, 'provider_stockroom', 'ASC', 'Skr'], [0, 'provider', 'ASC', 'Provider']]
     default_sort_criterions_json = json.dumps(default_sort_criterions)
 
-    columns = [[{'name':'item'}, {'name':'item_ref'}, {'name':'item_size'}, {'name':'provider'}, {'name':'provider_stockroom'}, {'name':'unit_price'}, {'name':'quantity'}, {'name':'total_price'}, {'name':'status'}, {'name':'recipient'}, {'name':'date_insert'}, {'name':'date_order'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}, {'name':'funding'}]]
+    columns = [[{'name':'item'}, {'name':'item_ref'}, {'name':'item_size'}, {'name':'provider'}, {'name':'provider_stockroom'}, {'name':'unit_price'}, {'name':'quantity'}, {'name':'total_price'}, {'name':'status'}, {'name':'recipient'}, {'name':'date_insert'}, {'name':'date_order'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}, {'name':'funding'}, {'name':'url', 'gui_type':'link'}]]
     columns_json = json.dumps(columns)
 
     queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%OrderBaseHandler.schema]
@@ -97,7 +98,7 @@ class OrderNewHandler(generic.GenericQueriesHandler, OrderBaseHandler):
     form = [{'label':'Order', 'columns':[{'name':'item'}, {'name':'item_ref'}, {'name':'item_size'}, {'name':'date_insert'}, {'name':'recipient'}, {'name':'funding'}]},
             {'label':None, 'columns':[{'name':'unit_price'}, {'name':'quantity'}, {'name':'total_price'}]},
             {'label':'Status', 'columns':[{'name':'status'}, {'name':'date_order'}]},
-            {'label':'Provider', 'columns':[{'name':'provider'}, {'name':'provider_stockroom'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}]}]
+            {'label':'Provider', 'columns':[{'name':'provider'}, {'name':'provider_stockroom'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}, {'name':'url'}]}]
     form_json = json.dumps(form)
 
     insert_queries = ["INSERT INTO %s.item ({columns}) VALUES ({query_values});"%OrderBaseHandler.schema]

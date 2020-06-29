@@ -84,7 +84,7 @@ class PlasmidHandler(generic.GenericHandler, PlasmidBaseHandler):
     default_sort_criterions = [[0, 'plasmid_number', 'DESC', 'Plasmid number']]
     default_sort_criterions_json = json.dumps(default_sort_criterions)
 
-    columns = [[{'name':'plasmid_number'}, {'name':'number_suffix'}, {'name':'name'}, {'name':'author'}, {'name':'description'}, {'name':'antibiotic'}, {'name':'linearize_sense'}, {'name':'promoter_sense'}, {'name':'vector'}, {'name':'cloning_strategy'}, {'name':'sequence'}, {'name':'sequence_insert'}, {'name':'map_img'}, {'name':'map_filename'}, {'name':'glycerol_stock'}, {'name':'missing'}, {'name':'date_insert'}]]
+    columns = [[{'name':'plasmid_number'}, {'name':'number_suffix'}, {'name':'name'}, {'name':'author'}, {'name':'description'}, {'name':'antibiotic'}, {'name':'linearize_sense'}, {'name':'promoter_sense'}, {'name':'vector'}, {'name':'cloning_strategy'}, {'name':'sequence'}, {'name':'sequence_insert'}, {'name':'map_img', 'gui_type':'tooltip_img'}, {'name':'map_filename'}, {'name':'glycerol_stock'}, {'name':'missing'}, {'name':'date_insert'}]]
     columns_json = json.dumps(columns)
 
     queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%PlasmidBaseHandler.schema]

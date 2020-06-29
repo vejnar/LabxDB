@@ -58,21 +58,37 @@ class Table extends Board {
                 }
                 // Add content
                 let content = this.toHuman(response[i][this.columns[j]['name']])
-                if (typeof content === 'string' && content.startsWith('data:image')) {
-                    let cell = createElement('DIV', 'tooltip', '▣')
-                    let tooltip = createElement('SPAN', 'tooltipimg', undefined)
-                    // Add image
-                    let image = new Image()
-                    image.src = content
-                    tooltip.appendChild(image)
-                    // Add tooltip
-                    cell.appendChild(tooltip)
+                let cell
+                switch (this.columns[j]['gui_type']) {
+                    case 'link':
+                        if (content.length > 0) {
+                            // Link
+                            cell = document.createElement('A')
+                            cell.className = 'button'
+                            cell.href = content
+                            cell.target = '_blank'
+                            cell.textContent = '↗'
+                        }
+                        break
+                    case 'tooltip_img':
+                        cell = createElement('DIV', 'tooltip', '▣')
+                        let tooltip = createElement('SPAN', 'tooltipimg', undefined)
+                        // Add image
+                        let image = new Image()
+                        image.src = content
+                        tooltip.appendChild(image)
+                        // Add tooltip
+                        cell.appendChild(tooltip)
+                        break
+                    default:
+                        if (content.length > 15) { // CSS max-width is 20em
+                            cell = createElement('DIV', 'cell', content)
+                        } else {
+                            cell = document.createTextNode(content)
+                        }
+                }
+                if (cell !== undefined) {
                     el.appendChild(cell)
-                } else if (content.length > 15) { // CSS max-width is 20em
-                    let cell = createElement('DIV', 'cell', content)
-                    el.appendChild(cell)
-                } else {
-                    el.appendChild(document.createTextNode(content))
                 }
                 // Add to row
                 row.appendChild(el)
