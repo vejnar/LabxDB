@@ -1,7 +1,7 @@
-item_id,item,item_ref,item_size,provider,provider_stockroom,quantity,unit_price,total_price,status,recipient,date_insert,date_order,manufacturer,manufacturer_ref,funding
-1,1.7ml tubes,,,AB,,1,12,12,ordered,Andrew,2018-12-02,2018-12-03,Bio,,
-2,100 bp DNA Ladder,,,,,2,80,160,ordered,Henry,2018-12-03,2018-12-03,Bio,,
-3,Antibody,,,,,1,350.5,350.5,ordered,Andrew,2018-12-15,2018-12-16,Bio,,
-4,Pen,,,AD,,10,1.5,15,ordered,Henry,2019-01-05,2018-01-05,Market,,
-5,Enzyme,,,,,1,425,425,to order,Claire,2019-01-15,2019-01-16,Bio,,
-6,Hard-drive,,,,,1,120,120,to order,Andrew,2019-01-16,2019-01-16,Market,,
+item_id,item,item_ref,item_size,provider,provider_stockroom,quantity,unit_price,total_price,status,recipient,date_insert,date_order,manufacturer,manufacturer_ref,funding,url
+1,1.7ml tubes,,,AB,,1,12,12,ordered,Andrew,2018-12-02,2018-12-03,Bio,,,
+2,100 bp DNA Ladder,,,,,2,80,160,ordered,Henry,2018-12-03,2018-12-03,Bio,,,
+3,Antibody,,,,,1,350.5,350.5,ordered,Andrew,2018-12-15,2018-12-16,Bio,,,https://en.wikipedia.org/wiki/Antibody
+4,Pen,,,AD,,10,1.5,15,ordered,Henry,2019-01-05,2018-01-05,Market,,,
+5,Enzyme,,,,,1,425,425,to order,Claire,2019-01-15,2019-01-16,Bio,,,
+6,Hard-drive,,,,,1,120,120,to order,Andrew,2019-01-16,2019-01-16,Market,,,
