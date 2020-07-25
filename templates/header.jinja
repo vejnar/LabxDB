@@ -1,7 +1,9 @@
 {% macro links(base_url, css_files=[], js_files=[]) %}
   <!-- CSS -->
   {% for css in css_files %}
+  {% if css is path_exists %}
   <link rel="stylesheet" type="text/css" href="{{ base_url }}/static/{{ css }}">
+  {% endif %}
   {% endfor %}
   <!-- JS -->
   {% for js in js_files %}
