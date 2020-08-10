@@ -38,7 +38,7 @@ async def init_connection(conn):
     await conn.set_type_codec('date', encoder=str, decoder=str, schema='pg_catalog', format='text')
 
 async def init_pool(app):
-    app['pool'] = await asyncpg.create_pool(dsn='postgres://{}:{}@{}:{}/{}'.format(app['db_user'], app['db_password'], app['db_host'], app['db_port'], app['db_name']), init=init_connection)
+    app['pool'] = await asyncpg.create_pool(dsn='postgres://{}:{}@{}:{}/{}'.format(app['db_user'], app['db_password'], app['db_host'], app['db_port'], app['db_name']), min_size=int(app['db_conn']), max_size=int(app['db_conn']), init=init_connection)
 
 async def close_pool(app):
     await app['pool'].close()
