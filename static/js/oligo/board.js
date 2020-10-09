@@ -21,7 +21,7 @@ class OligoTable extends Table {
         cts.push(this.getControlRemove(record))
         cts.push(this.getControlDuplicate(record))
         // Ordered
-        button = createElement('BUTTON', 'button', 'Ordered')
+        let button = createElement('BUTTON', 'button', 'Ordered')
         button.type = 'submit'
         button.action = joinURLs([this.baseURL, this.levelInfos['url'], 'edit', record[this.levelInfos['column_id']]])
         button.onclick = function (e) {
