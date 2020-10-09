@@ -45,6 +45,7 @@ class TableForm extends Form {
         this.getOptions()
             .then((form) => form.initFormPromise())
             .then((form) => form.fillForm(queryArgs))
+            .then((form) => form.postFillForm(queryArgs))
             .catch(error => alert(error))
         this.toggleModal('off')
     }
@@ -167,7 +168,7 @@ class TableForm extends Form {
                             for (let [column, input] of form.inputs[0]) {
                                 input.initValue(this.response[0][0][column])
                             }
-                            resolve()
+                            resolve(form)
                         } else {
                             reject(Error('Query failed: ' + status))
                         }
@@ -178,8 +179,14 @@ class TableForm extends Form {
                 // Send
                 xhr.send('[]')
             } else {
-                resolve()
+                resolve(form)
             }
+        })
+    }
+
+    postFillForm(queryArgs) {
+        return new Promise(function(resolve, reject) {
+            resolve()
         })
     }
 
