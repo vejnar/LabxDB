@@ -16,22 +16,10 @@ export { OligoTable }
 class OligoTable extends Table {
     getControlElements(record) {
         let cts = []
-        // Edit and Remove
+        // Edit, Remove, and Duplicate
         cts.push(this.getControlEdit(record))
         cts.push(this.getControlRemove(record))
-        // Duplicate
-        let form = document.createElement('FORM')
-        form.method = 'get'
-        form.action = joinURLs([this.baseURL, this.levelInfos['url'], 'new'])
-        let input = document.createElement('INPUT')
-        input.name = 'record_id'
-        input.type = 'hidden'
-        input.value = record[this.levelInfos['column_id']]
-        form.appendChild(input)
-        let button = createElement('BUTTON', 'button', 'Duplicate')
-        button.type = 'submit'
-        form.appendChild(button)
-        cts.push(form)
+        cts.push(this.getControlDuplicate(record))
         // Ordered
         button = createElement('BUTTON', 'button', 'Ordered')
         button.type = 'submit'
