@@ -94,6 +94,8 @@ class OrderHandler(generic.GenericHandler, OrderBaseHandler):
 @routes.view('/order/new')
 class OrderNewHandler(generic.GenericQueriesHandler, OrderBaseHandler):
     tpl = 'generic_edit.jinja'
+    form_path = 'js/order/form.js'
+    form_class = 'OrderTableForm'
 
     form = [{'label':'Order', 'columns':[{'name':'item'}, {'name':'item_ref'}, {'name':'item_size'}, {'name':'date_insert'}, {'name':'recipient'}, {'name':'funding'}]},
             {'label':None, 'columns':[{'name':'unit_price'}, {'name':'quantity'}, {'name':'total_price'}]},
