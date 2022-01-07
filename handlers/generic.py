@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2018-2020 Charles E. Vejnar
+# Copyright (C) 2018-2022 Charles E. Vejnar
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -98,9 +98,9 @@ class GenericHandler(base.BaseHandler):
                         elif st == 'equal_date' and isdate(text):
                             qys.append(qcol + ' = \'' + text + '\'')
             if len(qys) > 0:
-                search_queries.append(['search_query_level%s'%level, search_prefixes[level] + '(' + (' ' + search_gate + ' ').join(qys) + ')'])
+                search_queries.append([f'search_query_level{level}', search_prefixes[level] + '(' + (' ' + search_gate + ' ').join(qys) + ')'])
                 for i in range(0, level):
-                    search_queries.append(['not_null_children_level%s'%i, 'WHERE children IS NOT NULL'])
+                    search_queries.append([f'not_null_children_level{i}', 'WHERE children IS NOT NULL'])
         return search_queries
 
     def get_sort_queries(self, sort_criterions):
@@ -150,7 +150,7 @@ class GenericHandler(base.BaseHandler):
 
     async def post(self):
         data = await self.request.post()
-        self.logger.debug('POST in: %s'%data)
+        self.logger.debug(f'POST in: {data}')
 
         # Execute queries
         try:
@@ -162,7 +162,7 @@ class GenericHandler(base.BaseHandler):
                 limit_query = [['limit', data['limit']]]
                 # Assemble final query
                 fquery = query.format_map(collections.defaultdict(str, dict(search_queries + sort_queries + limit_query)))
-                self.logger.debug('POST query: %s'%fquery)
+                self.logger.debug(f'POST query: {fquery}')
                 # Add query to tasks
                 tasks.append(self.pool.fetchval(fquery))
             results = await asyncio.gather(*tasks)
@@ -170,7 +170,7 @@ class GenericHandler(base.BaseHandler):
             self.logger.error(error)
             return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
-        self.logger.debug('POST out: %s'%results[0])
+        self.logger.debug(f'POST out: {results[0]}')
         return aiohttp.web.Response(body=results[0], content_type='application/json', headers={'Query-status': 'OK'})
 
 class GenericQueriesHandler(base.BaseHandler):
@@ -183,7 +183,7 @@ class GenericQueriesHandler(base.BaseHandler):
             i = 1
             for column, v in data[idata].items():
                 columns.append(column)
-                query_values.append('$%d'%i)
+                query_values.append(f'${i}')
                 values.append(v)
                 i += 1
             if len(columns) > 0:
@@ -208,19 +208,19 @@ class GenericQueriesHandler(base.BaseHandler):
     async def post(self):
         # Get data
         data = await self.request.json()
-        self.logger.debug('POST in: %s'%data)
+        self.logger.debug(f'POST in: {data}')
         # Execute queries
         try:
             tasks = []
             for query, values in self.get_queries(data):
                 tasks.append(self.pool.fetchrow(query, *values))
-                self.logger.debug('POST query: %s'%query)
+                self.logger.debug(f'POST query: {query}')
             results = await asyncio.gather(*tasks)
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
             return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
-        self.logger.debug('POST out: %s'%results)
+        self.logger.debug(f'POST out: {results}')
         return aiohttp.web.Response(body=json.dumps(record2dict(results)), content_type='application/json', headers={'Query-status': 'OK'})
 
 class GenericRecordHandler(base.BaseHandler):
@@ -231,7 +231,7 @@ class GenericRecordHandler(base.BaseHandler):
             values = []
             i = 1
             for k, v in data[idata].items():
-                columns.append('%s=$%d'%(k, i))
+                columns.append(f'{k}=${i}')
                 values.append(v)
                 i += 1
             if len(columns) > 0:
@@ -257,20 +257,20 @@ class GenericRecordHandler(base.BaseHandler):
         # Get record ID & data
         record_id = self.request.match_info['record_id']
         data = await self.request.json()
-        self.logger.debug('POST in: %s'%data)
+        self.logger.debug(f'POST in: {data}')
         # Execute queries
         if len(data) > 0:
             try:
                 tasks = []
                 for query, values in self.get_queries(data, record_id):
-                    self.logger.debug('POST query: %s'%query)
+                    self.logger.debug(f'POST query: {query}')
                     tasks.append(self.pool.fetchrow(query, *values))
                 results = await asyncio.gather(*tasks)
             except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
                 self.logger.error(error)
                 return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
-        self.logger.debug('POST out: %s'%results)
+        self.logger.debug(f'POST out: {results}')
         return aiohttp.web.Response(body=json.dumps(record2dict(results)), content_type='application/json', headers={'Query-status': 'OK'})
 
 class GenericGetHandler(base.BaseHandler):
@@ -288,7 +288,7 @@ class GenericGetHandler(base.BaseHandler):
             self.logger.error(error)
             return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
-        self.logger.debug('GET out: %s'%results)
+        self.logger.debug(f'GET out: {results}')
         return aiohttp.web.Response(body=join_results(results), content_type='application/json', headers={'Query-status': 'OK'})
 
 class GenericRemoveHandler(base.BaseHandler):
