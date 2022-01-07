@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2018-2020 Charles E. Vejnar
+# Copyright (C) 2018-2022 Charles E. Vejnar
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -137,7 +137,7 @@ class SeqProjectHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[{'name':'project_ref'}, {'name':'project_name'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'scientist'}, {'name':'external_scientist'}, {'name':'sra_ref'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.project {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.project {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/seq/sample')
@@ -153,7 +153,7 @@ class SeqSampleHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[], [{'name':'sample_ref'}, {'name':'project_ref'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'molecule'}, {'name':'genotype'}, {'name':'age_hpf'}, {'name':'stage'}, {'name':'condition'}, {'name':'treatment'}, {'name':'species'}, {'name':'strain_maternal'}, {'name':'strain_paternal'}, {'name':'ploidy'}, {'name':'tissue'}, {'name':'selection'}, {'name':'library_protocol'}, {'name':'adapter_5p'}, {'name':'adapter_3p'}, {'name':'track_priority'}, {'name':'track_color'}, {'name':'sra_ref'}, {'name':'notes'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.sample {search_query_level1} {sort_query_level1} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.sample {{search_query_level1}} {{sort_query_level1}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [['', ' WHERE ']]
 
 @routes.view('/seq/replicate')
@@ -169,7 +169,7 @@ class SeqReplicateHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[], [], [{'name':'replicate_ref'}, {'name':'replicate_order'}, {'name':'sample_ref'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'sra_ref'}, {'name':'publication_ref'}, {'name':'notes'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.replicate {search_query_level2} {sort_query_level2} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.replicate {{search_query_level2}} {{sort_query_level2}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [['', '', ' WHERE ']]
 
 @routes.view('/seq/run')
@@ -185,7 +185,7 @@ class SeqRunHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[], [], [], [{'name':'run_ref'}, {'name':'run_order'}, {'name':'replicate_ref'}, {'name':'tube_label'}, {'name':'barcode'}, {'name':'second_barcode'}, {'name':'request_ref'}, {'name':'request_date'}, {'name':'failed'}, {'name':'flowcell'}, {'name':'platform'}, {'name':'quality_scores'}, {'name':'directional'}, {'name':'paired'}, {'name':'r1_strand'}, {'name':'spots'}, {'name':'max_read_length'}, {'name':'sra_ref'}, {'name':'notes'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.run {search_query_level3} {sort_query_level3} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.run {{search_query_level3}} {{sort_query_level3}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [['', '', '', ' WHERE ']]
 
 @routes.view('/seq/tree')
@@ -210,7 +210,7 @@ class SeqTreeHandler(generic.GenericHandler, SeqBaseHandler):
     column_titles = [['project_ref', 'label_short'], ['sample_ref', 'label_short'], ['replicate_ref', 'label_short'], ['run_ref']]
     column_titles_json = json.dumps(column_titles)
 
-    queries = ["""SELECT COALESCE(array_to_json(array_agg(row_to_json(p))), '[]')
+    queries = [f"""SELECT COALESCE(array_to_json(array_agg(row_to_json(p))), '[]')
                     FROM (
                         SELECT * FROM (
                             SELECT p.*, (
@@ -223,22 +223,22 @@ class SeqTreeHandler(generic.GenericHandler, SeqBaseHandler):
                                                 SELECT array_to_json(array_agg(row_to_json(r)))
                                                 FROM (
                                                     SELECT r.*
-                                                    FROM %s.run AS r
-                                                    WHERE replicate_ref = n.replicate_ref {search_query_level3} {sort_query_level3}
+                                                    FROM {SeqBaseHandler.schema}.run AS r
+                                                    WHERE replicate_ref = n.replicate_ref {{search_query_level3}} {{sort_query_level3}}
                                                 ) r
                                             ) AS children
-                                            FROM %s.replicate AS n
-                                            WHERE sample_ref = s.sample_ref {search_query_level2} {sort_query_level2}
-                                        ) n {not_null_children_level2}
+                                            FROM {SeqBaseHandler.schema}.replicate AS n
+                                            WHERE sample_ref = s.sample_ref {{search_query_level2}} {{sort_query_level2}}
+                                        ) n {{not_null_children_level2}}
                                     ) AS children
-                                    FROM %s.sample AS s
-                                    WHERE project_ref = p.project_ref {search_query_level1} {sort_query_level1}
-                                    ) s {not_null_children_level1}
+                                    FROM {SeqBaseHandler.schema}.sample AS s
+                                    WHERE project_ref = p.project_ref {{search_query_level1}} {{sort_query_level1}}
+                                    ) s {{not_null_children_level1}}
                                 ) AS children
-                            FROM %s.project AS p
-                            {search_query_level0} {sort_query_level0}
-                            ) pa {not_null_children_level0} LIMIT {limit}
-                        ) p;"""%(SeqBaseHandler.schema, SeqBaseHandler.schema, SeqBaseHandler.schema, SeqBaseHandler.schema)]
+                            FROM {SeqBaseHandler.schema}.project AS p
+                            {{search_query_level0}} {{sort_query_level0}}
+                            ) pa {{not_null_children_level0}} LIMIT {{limit}}
+                        ) p;"""]
     queries_search_prefixes = [[' WHERE ', ' AND ', ' AND ', ' AND ']]
 
 @routes.view('/seq/project/new')
@@ -251,7 +251,7 @@ class SeqProjectNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Project', 'columns':[{'name':'project_ref'}, {'name':'project_name'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'scientist'}, {'name':'external_scientist'}, {'name':'sra_ref'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.project ({columns}) VALUES ({query_values}) RETURNING project_id;"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.project ({{columns}}) VALUES ({{query_values}}) RETURNING project_id;"]
 
 @routes.view('/seq/sample/new')
 class SeqSampleNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
@@ -263,7 +263,7 @@ class SeqSampleNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Sample', 'columns':[{'name':'sample_ref'}, {'name':'project_ref'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'species'}, {'name':'strain_maternal'}, {'name':'strain_paternal'}, {'name':'genotype'}, {'name':'ploidy'}, {'name':'age_hpf'}, {'name':'stage'}, {'name':'tissue'}, {'name':'condition'}, {'name':'treatment'}, {'name':'selection'}, {'name':'molecule'}, {'name':'library_protocol'}, {'name':'adapter_5p'}, {'name':'adapter_3p'}, {'name':'track_priority'}, {'name':'track_color'}, {'name':'sra_ref'}, {'name':'notes'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.sample ({columns}) VALUES ({query_values}) RETURNING sample_id;"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.sample ({{columns}}) VALUES ({{query_values}}) RETURNING sample_id;"]
 
 @routes.view('/seq/replicate/new')
 class SeqReplicateNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
@@ -275,7 +275,7 @@ class SeqReplicateNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Replicate', 'columns':[{'name':'replicate_ref'}, {'name':'replicate_order'}, {'name':'sample_ref'}, {'name':'label_short'}, {'name':'label_long'}, {'name':'sra_ref'}, {'name':'publication_ref'}, {'name':'notes'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.replicate ({columns}) VALUES ({query_values}) RETURNING replicate_id;"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.replicate ({{columns}}) VALUES ({{query_values}}) RETURNING replicate_id;"]
 
 @routes.view('/seq/run/new')
 class SeqRunNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
@@ -287,7 +287,7 @@ class SeqRunNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Run', 'columns':[{'name':'run_ref'}, {'name':'run_order'}, {'name':'replicate_ref'}, {'name':'tube_label'}, {'name':'barcode'}, {'name':'second_barcode'}, {'name':'request_ref'}, {'name':'request_date'}, {'name':'failed'}, {'name':'flowcell'}, {'name':'platform'}, {'name':'quality_scores'}, {'name':'directional'}, {'name':'paired'}, {'name':'r1_strand'}, {'name':'spots'}, {'name':'max_read_length'}, {'name':'sra_ref'}, {'name':'notes'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.run ({columns}) VALUES ({query_values}) RETURNING run_id;"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.run ({{columns}}) VALUES ({{query_values}}) RETURNING run_id;"]
 
 @routes.view('/seq/project/edit/{record_id}')
 class SeqProjectEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -299,7 +299,7 @@ class SeqProjectEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqProjectNewHandler.form
     form_json = SeqProjectNewHandler.form_json
 
-    update_queries = ["UPDATE %s.project SET {update_query} WHERE project_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.project SET {{update_query}} WHERE project_id={{record_id}};"]
 
 @routes.view('/seq/sample/edit/{record_id}')
 class SeqSampleEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -311,7 +311,7 @@ class SeqSampleEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqSampleNewHandler.form
     form_json = SeqSampleNewHandler.form_json
 
-    update_queries = ["UPDATE %s.sample SET {update_query} WHERE sample_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.sample SET {{update_query}} WHERE sample_id={{record_id}};"]
 
 @routes.view('/seq/replicate/edit/{record_id}')
 class SeqReplicateEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -323,7 +323,7 @@ class SeqReplicateEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqReplicateNewHandler.form
     form_json = SeqReplicateNewHandler.form_json
 
-    update_queries = ["UPDATE %s.replicate SET {update_query} WHERE replicate_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.replicate SET {{update_query}} WHERE replicate_id={{record_id}};"]
 
 @routes.view('/seq/run/edit/{record_id}')
 class SeqRunEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -335,55 +335,55 @@ class SeqRunEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqRunNewHandler.form
     form_json = SeqRunNewHandler.form_json
 
-    update_queries = ["UPDATE %s.run SET {update_query} WHERE run_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.run SET {{update_query}} WHERE run_id={{record_id}};"]
 
 @routes.view('/seq/project/get/{record_id}')
 class SeqProjectGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.project WHERE project_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.project WHERE project_id={{record_id}}) r;"]
 
 @routes.view('/seq/sample/get/{record_id}')
 class SeqSampleGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.sample WHERE sample_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.sample WHERE sample_id={{record_id}}) r;"]
 
 @routes.view('/seq/replicate/get/{record_id}')
 class SeqReplicateGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.replicate WHERE replicate_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.replicate WHERE replicate_id={{record_id}}) r;"]
 
 @routes.view('/seq/run/get/{record_id}')
 class SeqRunGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.run WHERE run_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.run WHERE run_id={{record_id}}) r;"]
 
 @routes.view('/seq/project/get-ref/{record_id}')
 class SeqProjectGetRefHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.project WHERE project_ref='{record_id}') r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.project WHERE project_ref='{{record_id}}') r;"]
 
 @routes.view('/seq/sample/get-ref/{record_id}')
 class SeqSampleGetRefHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.sample WHERE sample_ref='{record_id}') r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.sample WHERE sample_ref='{{record_id}}') r;"]
 
 @routes.view('/seq/replicate/get-ref/{record_id}')
 class SeqReplicateGetRefHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.replicate WHERE replicate_ref='{record_id}') r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.replicate WHERE replicate_ref='{{record_id}}') r;"]
 
 @routes.view('/seq/run/get-ref/{record_id}')
 class SeqRunGetRefHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.run WHERE run_ref='{record_id}') r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.run WHERE run_ref='{{record_id}}') r;"]
 
 @routes.view('/seq/project/remove/{record_id}')
 class SeqProjectRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.project WHERE project_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.project WHERE project_id={{record_id}};"]
 
 @routes.view('/seq/sample/remove/{record_id}')
 class SeqSampleRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.sample WHERE sample_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.sample WHERE sample_id={{record_id}};"]
 
 @routes.view('/seq/replicate/remove/{record_id}')
 class SeqReplicateRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.replicate WHERE replicate_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.replicate WHERE replicate_id={{record_id}};"]
 
 @routes.view('/seq/run/remove/{record_id}')
 class SeqRunRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.run WHERE run_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.run WHERE run_id={{record_id}};"]
 
 @routes.view('/seq/assign')
 class SeqAssignHandler(generic.GenericQueriesHandler, SeqBaseHandler):
@@ -398,104 +398,132 @@ class SeqAssignHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     columns = [[], [], [], [{'name':'tube_label'}, {'name':'run_ref'}, {'name':'barcode'}, {'name':'flowcell'}]]
     columns_json = json.dumps(columns)
 
-    update_queries = ["UPDATE %s.run SET replicate_ref=$1, run_order=(SELECT COUNT(*)+1 FROM %s.run WHERE replicate_ref=$1::VARCHAR) WHERE run_ref=$2;"%(SeqBaseHandler.schema, SeqBaseHandler.schema),
-                      "UPDATE %s.replicate SET sample_ref=$1, replicate_order=(SELECT COUNT(*)+1 FROM %s.replicate WHERE sample_ref=$1::VARCHAR) WHERE replicate_ref=$2;"%(SeqBaseHandler.schema, SeqBaseHandler.schema),
-                      "UPDATE %s.sample SET project_ref=$1 WHERE sample_ref=$2;"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.run SET replicate_ref=$1, run_order=(SELECT COUNT(*)+1 FROM {SeqBaseHandler.schema}.run WHERE replicate_ref=$1::VARCHAR) WHERE run_ref=$2;",
+                      f"UPDATE {SeqBaseHandler.schema}.replicate SET sample_ref=$1, replicate_order=(SELECT COUNT(*)+1 FROM {SeqBaseHandler.schema}.replicate WHERE sample_ref=$1::VARCHAR) WHERE replicate_ref=$2;",
+                      f"UPDATE {SeqBaseHandler.schema}.sample SET project_ref=$1 WHERE sample_ref=$2;"]
 
-    def get_queries(self, prefix, new_run, data):
-        return [["SELECT * FROM %s.create_new_ids($1, $2, $3);"%SeqBaseHandler.schema, [prefix, new_run, json.dumps(data)]]]
+    def get_next_ref(self, prefix, current_ref):
+        if current_ref is None:
+            n = 1
+        else:
+            n = int(current_ref[len(prefix):]) + 1
+        if n < 999999:
+            return f'{prefix}{n:0>6}'
+        else:
+            return f'{prefix}{n}'
 
     async def post(self):
         # Get data
         data = await self.request.json()
+        self.logger.debug(f'POST in: {data}')
         # Prefix
         if data['prefix'] is None:
             prefix = self.prefix
         else:
             prefix = data['prefix']
 
-        # Levels (from bottom to top)
-        level_labels = [l['label'].lower() for l in self.level_infos[::-1]]
-        # Change unused labels (upstream of append) to None
+        # Set unused levels (upstream of append) to None
         for l in data['query']:
             state = True
             for c in l:
-                if state == False:
-                    c[1] = None
+                if state is False:
+                    c[0] = None
                 if state and c[0] == 'append':
                     state = False
-        # Transform to tree-like structure of new IDs
-        new_tree = []
-        query_ids = {}
-        for level in self.levels:
-            news = []
-            appends = []
-            current = []
-            for d in data['query']:
-                new = [p for p in d[level:] if p[1] is not None]
-                if len(new) > 0 and new[0][0] != 'append' and new != current:
-                    news.append(new)
-                    # Is new ID appending a level+1 ID?
-                    if len(new) > 1:
-                        if new[1][0] == 'append':
-                            appends.append(new[1][1])
-                        else:
-                            appends.append(None)
-                    current = new
-            new_tree.append(news)
-            query_ids[level_labels[level].lower()] = [n[0][1] for n in news]
-            query_ids[level_labels[level].lower()+'_append'] = appends
 
-        # Execute queries
-        try:
-            tasks = []
-            for query, values in self.get_queries(prefix, data.get('new_run', True), query_ids):
-                tasks.append(self.pool.fetchrow(query, *values))
-            results = await asyncio.gather(*tasks)
-        except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
-            self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
-
-        # Parse output
-        new_ids = [[] for i in self.levels]
-        new_serials = [[] for i in self.levels]
-        for i, l in enumerate(results[0]['k']):
-            new_ids[level_labels.index(l)].append(results[0]['ids'][i])
-            new_serials[level_labels.index(l)].append(results[0]['serials'][i])
-
-        # Update parent references for new IDs
-        queries = []
-        # Branches already traversed
-        branches = []
-        for idata, l in enumerate(data['query']):
-            for level, c in enumerate(l):
-                # Not a project
-                if level < len(l) - 1 and l[level+1][1] != None:
-                    # Select ref.
-                    if level == 0:
-                        select_ref = new_ids[level][idata]
-                    # New ID
-                    if l[level+1][0] == 'new':
-                        q = [m for m in l[level+1:] if m[1] is not None]
-                        new_ref = new_ids[level+1][new_tree[level+1].index(q)]
-                        if [new_ref, select_ref] not in branches:
-                            queries.append([self.update_queries[level], [new_ref, select_ref]])
-                            # Add to traversed branches
-                            branches.append([new_ref, select_ref])
-                    else:
-                        new_ref = ''
-                    select_ref = new_ref
-
-        # Execute queries
         try:
             async with self.pool.acquire() as con:
-                for query, values in queries:
-                    await con.execute(query, *values)
+                async with con.transaction():
+                    await con.execute(f"LOCK TABLE {SeqBaseHandler.schema}.run IN EXCLUSIVE MODE;")
+                    await con.execute(f"LOCK TABLE {SeqBaseHandler.schema}.replicate IN EXCLUSIVE MODE;")
+                    await con.execute(f"LOCK TABLE {SeqBaseHandler.schema}.sample IN EXCLUSIVE MODE;")
+                    await con.execute(f"LOCK TABLE {SeqBaseHandler.schema}.project IN EXCLUSIVE MODE;")
+
+                    new_refs = [{} for l in range(len(self.level_infos))]
+                    for qline in data['query']:
+
+                        # ----------
+                        # Level: Run
+                        ilevel = 0
+                        op, name = qline[ilevel]
+                        # Run are always new
+                        new_run = True
+                        if op == 'new':
+                            max_ref = await con.fetchval(f"SELECT MAX(run_ref) FROM {SeqBaseHandler.schema}.run WHERE run_ref LIKE CONCAT('{prefix}', '%');")
+                            current_run_ref = self.get_next_ref(prefix+'R', max_ref)
+                            await con.execute(f"UPDATE {SeqBaseHandler.schema}.run SET run_ref=$1, run_order=1 WHERE run_ref=$2;", current_run_ref, name)
+                            key = ''.join([str(qline[i][1]) for i in range(ilevel, max(self.levels)+1) if qline[i][0] is not None])
+                            new_refs[ilevel][key] = {'ref':current_run_ref, 'name':name}
+                        elif op == 'keep':
+                            current_run_ref = name
+
+                        # ----------------
+                        # Level: Replicate
+                        ilevel = 1
+                        op, name = qline[ilevel]
+                        new_replicate = False
+                        if op == 'new':
+                            key = ''.join([str(qline[i][1]) for i in range(ilevel, max(self.levels)+1) if qline[i][0] is not None])
+                            if key in new_refs[ilevel]:
+                                current_replicate_ref = new_refs[ilevel][key]['ref']
+                            else:
+                                max_ref = await con.fetchval(f"SELECT MAX(replicate_ref) FROM {SeqBaseHandler.schema}.replicate WHERE replicate_ref LIKE CONCAT('{prefix}', '%');")
+                                current_replicate_ref = self.get_next_ref(prefix+'N', max_ref)
+                                serial = await con.fetchval(f"INSERT INTO {SeqBaseHandler.schema}.replicate (replicate_ref,replicate_order,label_short) VALUES ($1, 1, $2) RETURNING replicate_id;", current_replicate_ref, name)
+                                new_refs[ilevel][key] = {'ref':current_replicate_ref, 'name':name, 'serial':serial}
+                                new_replicate = True
+                        elif op == 'append':
+                            current_replicate_ref = name
+                        # Update level upstream: Run
+                        if new_run:
+                            await con.execute(self.update_queries[ilevel-1], current_replicate_ref, current_run_ref)
+
+                        # -------------
+                        # Level: Sample
+                        ilevel = 2
+                        op, name = qline[ilevel]
+                        new_sample = False
+                        if op == 'new':
+                            key = ''.join([str(qline[i][1]) for i in range(ilevel, max(self.levels)+1) if qline[i][0] is not None])
+                            if key in new_refs[ilevel]:
+                                current_sample_ref = new_refs[ilevel][key]['ref']
+                            else:
+                                max_ref = await con.fetchval(f"SELECT MAX(sample_ref) FROM {SeqBaseHandler.schema}.sample WHERE sample_ref LIKE CONCAT('{prefix}', '%');")
+                                current_sample_ref = self.get_next_ref(prefix+'S', max_ref)
+                                serial = await con.fetchval(f"INSERT INTO {SeqBaseHandler.schema}.sample (sample_ref,label_short) VALUES ($1, $2) RETURNING sample_id;", current_sample_ref, name)
+                                new_refs[ilevel][key] = {'ref':current_sample_ref, 'name':name, 'serial':serial}
+                                new_sample = True
+                        elif op == 'append':
+                            current_sample_ref = name
+                        # Update level upstream: Replicate
+                        if new_replicate:
+                            await con.execute(self.update_queries[ilevel-1], current_sample_ref, current_replicate_ref)
+
+                        # --------------
+                        # Level: Project
+                        ilevel = 3
+                        op, name = qline[ilevel]
+                        if op == 'new':
+                            key = ''.join([str(qline[i][1]) for i in range(ilevel, max(self.levels)+1) if qline[i][0] is not None])
+                            if key in new_refs[ilevel]:
+                                current_project_ref = new_refs[ilevel][key]['ref']
+                            else:
+                                max_ref = await con.fetchval(f"SELECT MAX(project_ref) FROM {SeqBaseHandler.schema}.project WHERE project_ref LIKE CONCAT('{prefix}', '%');")
+                                current_project_ref = self.get_next_ref(prefix+'P', max_ref)
+                                serial = await con.fetchval(f"INSERT INTO {SeqBaseHandler.schema}.project (project_ref,label_short) VALUES ($1, $2) RETURNING project_id;", current_project_ref, name)
+                                new_refs[ilevel][key] = {'ref':current_project_ref, 'name':name, 'serial':serial}
+                        elif op == 'append':
+                            current_project_ref = name
+                        # Update level upstream: Sample
+                        if new_sample:
+                            await con.execute(self.update_queries[ilevel-1], current_project_ref, current_sample_ref)
+
+                    self.logger.debug(f'POST new_refs: {new_refs}')
+                    return aiohttp.web.Response(body=json.dumps({'refs': new_refs}), content_type='application/json', headers={'Query-status': 'OK'})
+
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
             return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
-
-        return aiohttp.web.Response(body=json.dumps({'ids': new_serials, 'refs': new_ids}), content_type='application/json', headers={'Query-status': 'OK'})
 
 @routes.view('/seq/project/fulledit/{record_id}')
 class SeqFullProjectHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -520,7 +548,7 @@ class SeqFullProjectHandler(generic.GenericRecordHandler, SeqBaseHandler):
                 i = 1
                 for k, v in data[level][idata].items():
                     if k != self.level_infos[level]['column_id']:
-                        columns.append('%s=$%d'%(k, i))
+                        columns.append(f'{k}=${i}')
                         values.append(v)
                         i += 1
                 for query in self.update_queries[level]:
@@ -545,7 +573,7 @@ class SeqOptionHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[{'name':'group_name'}, {'name':'option'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.option {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/seq/option/new')
@@ -561,7 +589,7 @@ class SeqOptionNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Option', 'columns':[{'name':'group_name'}, {'name':'option'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.option ({columns}) VALUES ({query_values});"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.option ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/seq/option/edit/{record_id}')
 class SeqOptionEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -576,15 +604,15 @@ class SeqOptionEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqOptionNewHandler.form
     form_json = SeqOptionNewHandler.form_json
 
-    update_queries = ["UPDATE %s.option SET {update_query} WHERE option_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.option SET {{update_query}} WHERE option_id={{record_id}};"]
 
 @routes.view('/seq/option/get/{record_id}')
 class SeqOptionGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option WHERE option_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.option WHERE option_id={{record_id}}) r;"]
 
 @routes.view('/seq/option/remove/{record_id}')
 class SeqOptionRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.option WHERE option_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.option WHERE option_id={{record_id}};"]
 
 @routes.view('/seq/publication')
 class SeqPublicationHandler(generic.GenericHandler, SeqBaseHandler):
@@ -607,7 +635,7 @@ class SeqPublicationHandler(generic.GenericHandler, SeqBaseHandler):
     columns = [[{'name':'publication_ref'}, {'name':'title'}, {'name':'publication_date'}, {'name':'pubmed_id'}, {'name':'sra_ref'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.publication {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.publication {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/seq/publication/new')
@@ -623,7 +651,7 @@ class SeqPublicationNewHandler(generic.GenericQueriesHandler, SeqBaseHandler):
     form = [{'label':'Publication', 'columns':[{'name':'publication_ref'}, {'name':'title'}, {'name':'publication_date'}, {'name':'pubmed_id'}, {'name':'sra_ref'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.publication ({columns}) VALUES ({query_values});"%SeqBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {SeqBaseHandler.schema}.publication ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/seq/publication/edit/{record_id}')
 class SeqPublicationEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
@@ -638,16 +666,16 @@ class SeqPublicationEditHandler(generic.GenericRecordHandler, SeqBaseHandler):
     form = SeqPublicationNewHandler.form
     form_json = SeqPublicationNewHandler.form_json
 
-    update_queries = ["UPDATE %s.publication SET {update_query} WHERE publication_id={record_id};"%SeqBaseHandler.schema]
+    update_queries = [f"UPDATE {SeqBaseHandler.schema}.publication SET {{update_query}} WHERE publication_id={{record_id}};"]
 
 @routes.view('/seq/publication/get/{record_id}')
 class SeqPublicationGetHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.publication WHERE publication_id={record_id}) r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.publication WHERE publication_id={{record_id}}) r;"]
 
 @routes.view('/seq/publication/remove/{record_id}')
 class SeqPublicationRemoveHandler(generic.GenericRemoveHandler, SeqBaseHandler):
-    queries = ["DELETE FROM %s.publication WHERE publication_id={record_id};"%SeqBaseHandler.schema]
+    queries = [f"DELETE FROM {SeqBaseHandler.schema}.publication WHERE publication_id={{record_id}};"]
 
 @routes.view('/seq/publication/get-ref/{record_id}')
 class SeqPublicationGetRefHandler(generic.GenericGetHandler, SeqBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.publication WHERE publication_ref='{record_id}') r;"%SeqBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {SeqBaseHandler.schema}.publication WHERE publication_ref='{{record_id}}') r;"]
