@@ -87,7 +87,7 @@ class FishHandler(generic.GenericHandler, FishBaseHandler):
     columns = [[{'name':'y_number'}, {'name':'name'}, {'name':'genotype'}, {'name':'date_birth'}, {'name':'notes'}, {'name':'father_id'}, {'name':'father_name'}, {'name':'mother_id'}, {'name':'mother_name'}, {'name':'number_fish'}, {'name':'number_tank'}, {'name':'author'}, {'name':'genotyping'}, {'name':'zfin_ref'}, {'name':'terminated'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.line {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%FishBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {FishBaseHandler.schema}.line {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/fish/new')
@@ -100,7 +100,7 @@ class FishNewHandler(generic.GenericQueriesHandler, FishBaseHandler):
             {'label':None, 'columns':[{'name':'genotyping'}, {'name':'notes'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["SELECT %s.insert_record($1);"%FishBaseHandler.schema]
+    insert_queries = [f"SELECT {FishBaseHandler.schema}.insert_record($1);"]
 
     def get_queries(self, data):
         queries = []
@@ -116,15 +116,15 @@ class FishEditHandler(generic.GenericRecordHandler, FishBaseHandler):
     form = FishNewHandler.form
     form_json = FishNewHandler.form_json
 
-    update_queries = ["UPDATE %s.line SET {update_query} WHERE line_id={record_id};"%FishBaseHandler.schema]
+    update_queries = [f"UPDATE {FishBaseHandler.schema}.line SET {{update_query}} WHERE line_id={{record_id}};"]
 
 @routes.view('/fish/get/{record_id}')
 class FishGetHandler(generic.GenericGetHandler, FishBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.line WHERE line_id={record_id}) r;"%FishBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {FishBaseHandler.schema}.line WHERE line_id={{record_id}}) r;"]
 
 @routes.view('/fish/remove/{record_id}')
 class FishRemoveHandler(generic.GenericRemoveHandler, FishBaseHandler):
-    queries = ["DELETE FROM %s.line WHERE line_id={record_id};"%FishBaseHandler.schema]
+    queries = [f"DELETE FROM {FishBaseHandler.schema}.line WHERE line_id={{record_id}};"]
 
 @routes.view('/fish/option')
 class FishOptionHandler(generic.GenericHandler, FishBaseHandler):
@@ -144,7 +144,7 @@ class FishOptionHandler(generic.GenericHandler, FishBaseHandler):
     columns = [[{'name':'group_name'}, {'name':'option'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%FishBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {FishBaseHandler.schema}.option {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/fish/option/new')
@@ -160,7 +160,7 @@ class FishOptionNewHandler(generic.GenericQueriesHandler, FishBaseHandler):
     form = [{'label':'Option', 'columns':[{'name':'group_name'}, {'name':'option'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.option ({columns}) VALUES ({query_values});"%FishBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {FishBaseHandler.schema}.option ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/fish/option/edit/{record_id}')
 class FishOptionEditHandler(generic.GenericRecordHandler, FishBaseHandler):
@@ -175,12 +175,12 @@ class FishOptionEditHandler(generic.GenericRecordHandler, FishBaseHandler):
     form = FishOptionNewHandler.form
     form_json = FishOptionNewHandler.form_json
 
-    update_queries = ["UPDATE %s.option SET {update_query} WHERE option_id={record_id};"%FishBaseHandler.schema]
+    update_queries = [f"UPDATE {FishBaseHandler.schema}.option SET {{update_query}} WHERE option_id={{record_id}};"]
 
 @routes.view('/fish/option/get/{record_id}')
 class FishOptionGetHandler(generic.GenericGetHandler, FishBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option WHERE option_id={record_id}) r;"%FishBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {FishBaseHandler.schema}.option WHERE option_id={{record_id}}) r;"]
 
 @routes.view('/fish/option/remove/{record_id}')
 class FishOptionRemoveHandler(generic.GenericRemoveHandler, FishBaseHandler):
-    queries = ["DELETE FROM %s.option WHERE option_id={record_id};"%FishBaseHandler.schema]
+    queries = [f"DELETE FROM {FishBaseHandler.schema}.option WHERE option_id={{record_id}};"]

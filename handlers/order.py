@@ -88,7 +88,7 @@ class OrderHandler(generic.GenericHandler, OrderBaseHandler):
     columns = [[{'name':'item'}, {'name':'item_ref'}, {'name':'item_size'}, {'name':'provider'}, {'name':'provider_stockroom'}, {'name':'unit_price'}, {'name':'quantity'}, {'name':'total_price'}, {'name':'status'}, {'name':'recipient'}, {'name':'date_insert'}, {'name':'date_order'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}, {'name':'funding'}, {'name':'url', 'gui_type':'link'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%OrderBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OrderBaseHandler.schema}.item {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/order/new')
@@ -103,7 +103,7 @@ class OrderNewHandler(generic.GenericQueriesHandler, OrderBaseHandler):
             {'label':'Provider', 'columns':[{'name':'provider'}, {'name':'provider_stockroom'}, {'name':'manufacturer'}, {'name':'manufacturer_ref'}, {'name':'url'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.item ({columns}) VALUES ({query_values});"%OrderBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {OrderBaseHandler.schema}.item ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/order/edit/{record_id}')
 class OrderEditHandler(generic.GenericRecordHandler, OrderBaseHandler):
@@ -113,15 +113,15 @@ class OrderEditHandler(generic.GenericRecordHandler, OrderBaseHandler):
     form = OrderNewHandler.form
     form_json = OrderNewHandler.form_json
 
-    update_queries = ["UPDATE %s.item SET {update_query} WHERE item_id={record_id};"%OrderBaseHandler.schema]
+    update_queries = [f"UPDATE {OrderBaseHandler.schema}.item SET {{update_query}} WHERE item_id={{record_id}};"]
 
 @routes.view('/order/get/{record_id}')
 class OrderGetHandler(generic.GenericGetHandler, OrderBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item WHERE item_id={record_id}) r;"%OrderBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OrderBaseHandler.schema}.item WHERE item_id={{record_id}}) r;"]
 
 @routes.view('/order/remove/{record_id}')
 class OrderRemoveHandler(generic.GenericRemoveHandler, OrderBaseHandler):
-    queries = ["DELETE FROM %s.item WHERE item_id={record_id};"%OrderBaseHandler.schema]
+    queries = [f"DELETE FROM {OrderBaseHandler.schema}.item WHERE item_id={{record_id}};"]
 
 @routes.view('/order/option')
 class OrderOptionHandler(generic.GenericHandler, OrderBaseHandler):
@@ -141,7 +141,7 @@ class OrderOptionHandler(generic.GenericHandler, OrderBaseHandler):
     columns = [[{'name':'group_name'}, {'name':'option'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%OrderBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OrderBaseHandler.schema}.option {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/order/option/new')
@@ -157,7 +157,7 @@ class OrderOptionNewHandler(generic.GenericQueriesHandler, OrderBaseHandler):
     form = [{'label':'Option', 'columns':[{'name':'group_name'}, {'name':'option'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.option ({columns}) VALUES ({query_values});"%OrderBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {OrderBaseHandler.schema}.option ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/order/option/edit/{record_id}')
 class OrderOptionEditHandler(generic.GenericRecordHandler, OrderBaseHandler):
@@ -172,12 +172,12 @@ class OrderOptionEditHandler(generic.GenericRecordHandler, OrderBaseHandler):
     form = OrderOptionNewHandler.form
     form_json = OrderOptionNewHandler.form_json
 
-    update_queries = ["UPDATE %s.option SET {update_query} WHERE option_id={record_id};"%OrderBaseHandler.schema]
+    update_queries = [f"UPDATE {OrderBaseHandler.schema}.option SET {{update_query}} WHERE option_id={{record_id}};"]
 
 @routes.view('/order/option/get/{record_id}')
 class OrderOptionGetHandler(generic.GenericGetHandler, OrderBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option WHERE option_id={record_id}) r;"%OrderBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OrderBaseHandler.schema}.option WHERE option_id={{record_id}}) r;"]
 
 @routes.view('/order/option/remove/{record_id}')
 class OrderOptionRemoveHandler(generic.GenericRemoveHandler, OrderBaseHandler):
-    queries = ["DELETE FROM %s.option WHERE option_id={record_id};"%OrderBaseHandler.schema]
+    queries = [f"DELETE FROM {OrderBaseHandler.schema}.option WHERE option_id={{record_id}};"]

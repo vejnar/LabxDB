@@ -81,7 +81,7 @@ class OligoHandler(generic.GenericHandler, OligoBaseHandler):
     columns = [[{'name':'oligo_number'}, {'name':'number_suffix'}, {'name':'name'}, {'name':'description'}, {'name':'sequence'}, {'name':'author'}, {'name':'date_insert'}, {'name':'date_order'}, {'name':'status'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%OligoBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OligoBaseHandler.schema}.item {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/oligo/new')
@@ -92,7 +92,7 @@ class OligoNewHandler(generic.GenericQueriesHandler, OligoBaseHandler):
             {'label':None, 'columns':[{'name':'description'}, {'name':'sequence'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["SELECT %s.insert_record($1);"%OligoBaseHandler.schema]
+    insert_queries = [f"SELECT {OligoBaseHandler.schema}.insert_record($1);"]
 
     def get_queries(self, data):
         queries = []
@@ -107,15 +107,15 @@ class OligoEditHandler(generic.GenericRecordHandler, OligoBaseHandler):
     form = OligoNewHandler.form
     form_json = OligoNewHandler.form_json
 
-    update_queries = ["UPDATE %s.item SET {update_query} WHERE item_id={record_id};"%OligoBaseHandler.schema]
+    update_queries = [f"UPDATE {OligoBaseHandler.schema}.item SET {{update_query}} WHERE item_id={{record_id}};"]
 
 @routes.view('/oligo/get/{record_id}')
 class OligoGetHandler(generic.GenericGetHandler, OligoBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item WHERE item_id={record_id}) r;"%OligoBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OligoBaseHandler.schema}.item WHERE item_id={{record_id}}) r;"]
 
 @routes.view('/oligo/remove/{record_id}')
 class OligoRemoveHandler(generic.GenericRemoveHandler, OligoBaseHandler):
-    queries = ["DELETE FROM %s.item WHERE item_id={record_id};"%OligoBaseHandler.schema]
+    queries = [f"DELETE FROM {OligoBaseHandler.schema}.item WHERE item_id={{record_id}};"]
 
 @routes.view('/oligo/batch')
 class OligoBatchHandler(generic.GenericQueriesHandler, OligoBaseHandler):
@@ -147,7 +147,7 @@ class OligoOptionHandler(generic.GenericHandler, OligoBaseHandler):
     columns = [[{'name':'group_name'}, {'name':'option'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%OligoBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OligoBaseHandler.schema}.option {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/oligo/option/new')
@@ -163,7 +163,7 @@ class OligoOptionNewHandler(generic.GenericQueriesHandler, OligoBaseHandler):
     form = [{'label':'Option', 'columns':[{'name':'group_name'}, {'name':'option'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.option ({columns}) VALUES ({query_values});"%OligoBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {OligoBaseHandler.schema}.option ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/oligo/option/edit/{record_id}')
 class OligoOptionEditHandler(generic.GenericRecordHandler, OligoBaseHandler):
@@ -178,12 +178,12 @@ class OligoOptionEditHandler(generic.GenericRecordHandler, OligoBaseHandler):
     form = OligoOptionNewHandler.form
     form_json = OligoOptionNewHandler.form_json
 
-    update_queries = ["UPDATE %s.option SET {update_query} WHERE option_id={record_id};"%OligoBaseHandler.schema]
+    update_queries = [f"UPDATE {OligoBaseHandler.schema}.option SET {{update_query}} WHERE option_id={{record_id}};"]
 
 @routes.view('/oligo/option/get/{record_id}')
 class OligoOptionGetHandler(generic.GenericGetHandler, OligoBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option WHERE option_id={record_id}) r;"%OligoBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {OligoBaseHandler.schema}.option WHERE option_id={{record_id}}) r;"]
 
 @routes.view('/oligo/option/remove/{record_id}')
 class OligoOptionRemoveHandler(generic.GenericRemoveHandler, OligoBaseHandler):
-    queries = ["DELETE FROM %s.option WHERE option_id={record_id};"%OligoBaseHandler.schema]
+    queries = [f"DELETE FROM {OligoBaseHandler.schema}.option WHERE option_id={{record_id}};"]

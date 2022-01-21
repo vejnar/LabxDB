@@ -87,7 +87,7 @@ class PlasmidHandler(generic.GenericHandler, PlasmidBaseHandler):
     columns = [[{'name':'plasmid_number'}, {'name':'number_suffix'}, {'name':'name'}, {'name':'author'}, {'name':'description'}, {'name':'antibiotic'}, {'name':'linearize_sense'}, {'name':'promoter_sense'}, {'name':'vector'}, {'name':'cloning_strategy'}, {'name':'sequence'}, {'name':'sequence_insert'}, {'name':'map_img', 'gui_type':'tooltip_img'}, {'name':'map_filename'}, {'name':'glycerol_stock'}, {'name':'missing'}, {'name':'date_insert'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%PlasmidBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {PlasmidBaseHandler.schema}.item {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/plasmid/new')
@@ -101,7 +101,7 @@ class PlasmidNewHandler(generic.GenericQueriesHandler, PlasmidBaseHandler):
             {'label':None, 'columns':[{'name':'map_img'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["SELECT %s.insert_record($1);"%PlasmidBaseHandler.schema]
+    insert_queries = [f"SELECT {PlasmidBaseHandler.schema}.insert_record($1);"]
 
     def get_queries(self, data):
         queries = []
@@ -116,15 +116,15 @@ class PlasmidEditHandler(generic.GenericRecordHandler, PlasmidBaseHandler):
     form = PlasmidNewHandler.form
     form_json = PlasmidNewHandler.form_json
 
-    update_queries = ["UPDATE %s.item SET {update_query} WHERE item_id={record_id};"%PlasmidBaseHandler.schema]
+    update_queries = [f"UPDATE {PlasmidBaseHandler.schema}.item SET {{update_query}} WHERE item_id={{record_id}};"]
 
 @routes.view('/plasmid/get/{record_id}')
 class PlasmidGetHandler(generic.GenericGetHandler, PlasmidBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.item WHERE item_id={record_id}) r;"%PlasmidBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {PlasmidBaseHandler.schema}.item WHERE item_id={{record_id}}) r;"]
 
 @routes.view('/plasmid/remove/{record_id}')
 class PlasmidRemoveHandler(generic.GenericRemoveHandler, PlasmidBaseHandler):
-    queries = ["DELETE FROM %s.item WHERE item_id={record_id};"%PlasmidBaseHandler.schema]
+    queries = [f"DELETE FROM {PlasmidBaseHandler.schema}.item WHERE item_id={{record_id}};"]
 
 @routes.view('/plasmid/batch')
 class PlasmidBatchHandler(generic.GenericQueriesHandler, PlasmidBaseHandler):
@@ -155,7 +155,7 @@ class PlasmidOptionHandler(generic.GenericHandler, PlasmidBaseHandler):
     columns = [[{'name':'group_name'}, {'name':'option'}]]
     columns_json = json.dumps(columns)
 
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option {search_query_level0} {sort_query_level0} LIMIT {limit}) r;"%PlasmidBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {PlasmidBaseHandler.schema}.option {{search_query_level0}} {{sort_query_level0}} LIMIT {{limit}}) r;"]
     queries_search_prefixes = [[' WHERE ']]
 
 @routes.view('/plasmid/option/new')
@@ -171,7 +171,7 @@ class PlasmidOptionNewHandler(generic.GenericQueriesHandler, PlasmidBaseHandler)
     form = [{'label':'Option', 'columns':[{'name':'group_name'}, {'name':'option'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = ["INSERT INTO %s.option ({columns}) VALUES ({query_values});"%PlasmidBaseHandler.schema]
+    insert_queries = [f"INSERT INTO {PlasmidBaseHandler.schema}.option ({{columns}}) VALUES ({{query_values}});"]
 
 @routes.view('/plasmid/option/edit/{record_id}')
 class PlasmidOptionEditHandler(generic.GenericRecordHandler, PlasmidBaseHandler):
@@ -186,12 +186,12 @@ class PlasmidOptionEditHandler(generic.GenericRecordHandler, PlasmidBaseHandler)
     form = PlasmidOptionNewHandler.form
     form_json = PlasmidOptionNewHandler.form_json
 
-    update_queries = ["UPDATE %s.option SET {update_query} WHERE option_id={record_id};"%PlasmidBaseHandler.schema]
+    update_queries = [f"UPDATE {PlasmidBaseHandler.schema}.option SET {{update_query}} WHERE option_id={{record_id}};"]
 
 @routes.view('/plasmid/option/get/{record_id}')
 class PlasmidOptionGetHandler(generic.GenericGetHandler, PlasmidBaseHandler):
-    queries = ["SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM %s.option WHERE option_id={record_id}) r;"%PlasmidBaseHandler.schema]
+    queries = [f"SELECT COALESCE(array_to_json(array_agg(row_to_json(r))), '[]') FROM (SELECT * FROM {PlasmidBaseHandler.schema}.option WHERE option_id={{record_id}}) r;"]
 
 @routes.view('/plasmid/option/remove/{record_id}')
 class PlasmidOptionRemoveHandler(generic.GenericRemoveHandler, PlasmidBaseHandler):
-    queries = ["DELETE FROM %s.option WHERE option_id={record_id};"%PlasmidBaseHandler.schema]
+    queries = [f"DELETE FROM {PlasmidBaseHandler.schema}.option WHERE option_id={{record_id}};"]
