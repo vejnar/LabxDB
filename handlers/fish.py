@@ -11,6 +11,7 @@
 import json
 
 import aiohttp.web
+import asyncpg
 
 from . import base
 from . import generic
@@ -100,13 +101,46 @@ class FishNewHandler(generic.GenericQueriesHandler, FishBaseHandler):
             {'label':None, 'columns':[{'name':'genotyping'}, {'name':'notes'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = [f"SELECT {FishBaseHandler.schema}.insert_record($1);"]
+    insert_queries = [f"INSERT INTO {FishBaseHandler.schema}.line ({{columns}}) VALUES ({{query_values}});"]
 
-    def get_queries(self, data):
-        queries = []
-        for query in self.insert_queries:
-            queries.append([query, [json.dumps(data)]])
-        return queries
+    async def post(self):
+        # Get data
+        data = await self.request.json()
+        self.logger.debug(f'POST in: {data}')
+
+        try:
+            async with self.pool.acquire() as con:
+                async with con.transaction():
+                    await con.execute(f"LOCK TABLE {FishBaseHandler.schema}.line IN EXCLUSIVE MODE;")
+
+                    # Get next Y number
+                    max_y_number = await con.fetchval(f"SELECT MAX(y_number) FROM {FishBaseHandler.schema}.line;")
+                    if max_y_number is None:
+                        y_number = 1
+                    else:
+                        y_number = max_y_number + 1
+
+                    # Add Y number
+                    y_numbers = []
+                    for idata in range(len(data)):
+                        data[idata]['y_number'] = y_number
+                        y_numbers.append(y_number)
+                        y_number += 1
+
+                    # Get queries
+                    queries = self.get_queries(data)
+                    # Run queries
+                    for query, values in queries:
+                        self.logger.debug(f'POST query: {query}')
+                        # Add line
+                        await con.execute(query, *values)
+
+                    self.logger.debug(f'POST y_numbers: {y_numbers}')
+                    return aiohttp.web.Response(body=json.dumps({'y_numbers': y_numbers}), content_type='application/json', headers={'Query-status': 'OK'})
+
+        except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
+            self.logger.error(error)
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
 @routes.view('/fish/edit/{record_id}')
 class FishEditHandler(generic.GenericRecordHandler, FishBaseHandler):

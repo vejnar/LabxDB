@@ -11,6 +11,7 @@
 import json
 
 import aiohttp.web
+import asyncpg
 
 from . import base
 from . import generic
@@ -92,13 +93,53 @@ class OligoNewHandler(generic.GenericQueriesHandler, OligoBaseHandler):
             {'label':None, 'columns':[{'name':'description'}, {'name':'sequence'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = [f"SELECT {OligoBaseHandler.schema}.insert_record($1);"]
+    insert_queries = [f"INSERT INTO {OligoBaseHandler.schema}.item ({{columns}}) VALUES ({{query_values}});"]
 
-    def get_queries(self, data):
-        queries = []
-        for query in self.insert_queries:
-            queries.append([query, [json.dumps(data)]])
-        return queries
+    def get_oligo_name(self, oligo_number, name):
+        if name.startswith('_') or name.startswith('-') or name.startswith(' '):
+            return f'{oligo_number}{name}'
+        else:
+            return f'{oligo_number}_{name}'
+
+    async def post(self):
+        # Get data
+        data = await self.request.json()
+        self.logger.debug(f'POST in: {data}')
+
+        try:
+            async with self.pool.acquire() as con:
+                async with con.transaction():
+                    await con.execute(f"LOCK TABLE {OligoBaseHandler.schema}.item IN EXCLUSIVE MODE;")
+
+                    # Get next oligo number
+                    max_oligo_number = await con.fetchval(f"SELECT MAX(oligo_number) FROM {OligoBaseHandler.schema}.item;")
+                    if max_oligo_number is None:
+                        oligo_number = 1
+                    else:
+                        oligo_number = max_oligo_number + 1
+
+                    # Add oligo number & Update name
+                    oligo_numbers = []
+                    for idata in range(len(data)):
+                        data[idata]['oligo_number'] = oligo_number
+                        data[idata]['name'] = self.get_oligo_name(oligo_number, data[idata]['name'])
+                        oligo_numbers.append(oligo_number)
+                        oligo_number += 1
+
+                    # Get queries
+                    queries = self.get_queries(data)
+                    # Run queries
+                    for query, values in queries:
+                        self.logger.debug(f'POST query: {query}')
+                        # Add item
+                        await con.execute(query, *values)
+
+                    self.logger.debug(f'POST oligo_numbers: {oligo_numbers}')
+                    return aiohttp.web.Response(body=json.dumps({'oligo_numbers': oligo_numbers}), content_type='application/json', headers={'Query-status': 'OK'})
+
+        except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
+            self.logger.error(error)
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
 @routes.view('/oligo/edit/{record_id}')
 class OligoEditHandler(generic.GenericRecordHandler, OligoBaseHandler):
@@ -118,16 +159,10 @@ class OligoRemoveHandler(generic.GenericRemoveHandler, OligoBaseHandler):
     queries = [f"DELETE FROM {OligoBaseHandler.schema}.item WHERE item_id={{record_id}};"]
 
 @routes.view('/oligo/batch')
-class OligoBatchHandler(generic.GenericQueriesHandler, OligoBaseHandler):
+class OligoBatchHandler(OligoNewHandler):
     tpl = 'generic_edit.jinja'
     form_path = 'js/batchform.js'
     form_class = 'BatchForm'
-
-    form = OligoNewHandler.form
-    form_json = OligoNewHandler.form_json
-
-    insert_queries = OligoNewHandler.insert_queries
-    get_queries = OligoNewHandler.get_queries
 
 @routes.view('/oligo/option')
 class OligoOptionHandler(generic.GenericHandler, OligoBaseHandler):

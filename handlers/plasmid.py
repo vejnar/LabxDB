@@ -11,6 +11,7 @@
 import json
 
 import aiohttp.web
+import asyncpg
 
 from . import base
 from . import generic
@@ -101,13 +102,55 @@ class PlasmidNewHandler(generic.GenericQueriesHandler, PlasmidBaseHandler):
             {'label':None, 'columns':[{'name':'map_img'}]}]
     form_json = json.dumps(form)
 
-    insert_queries = [f"SELECT {PlasmidBaseHandler.schema}.insert_record($1);"]
+    insert_queries = [f"INSERT INTO {PlasmidBaseHandler.schema}.item ({{columns}}) VALUES ({{query_values}});"]
 
-    def get_queries(self, data):
-        queries = []
-        for query in self.insert_queries:
-            queries.append([query, [json.dumps(data)]])
-        return queries
+    def get_map_filename(self, plasmid_number, map_filename):
+        if map_filename is None:
+            return None
+        elif map_filename.startswith('_') or map_filename.startswith('-') or map_filename.startswith(' '):
+            return f'{plasmid_number}{map_filename}'
+        else:
+            return f'{plasmid_number}_{map_filename}'
+
+    async def post(self):
+        # Get data
+        data = await self.request.json()
+        self.logger.debug(f'POST in: {data}')
+
+        try:
+            async with self.pool.acquire() as con:
+                async with con.transaction():
+                    await con.execute(f"LOCK TABLE {PlasmidBaseHandler.schema}.item IN EXCLUSIVE MODE;")
+
+                    # Get next plasmid number
+                    max_plasmid_number = await con.fetchval(f"SELECT MAX(plasmid_number) FROM {PlasmidBaseHandler.schema}.item;")
+                    if max_plasmid_number is None:
+                        plasmid_number = 1
+                    else:
+                        plasmid_number = max_plasmid_number + 1
+
+                    # Add plasmid number & Update map_filename
+                    plasmid_numbers = []
+                    for idata in range(len(data)):
+                        data[idata]['plasmid_number'] = plasmid_number
+                        data[idata]['map_filename'] = self.get_map_filename(plasmid_number, data[idata]['map_filename'])
+                        plasmid_numbers.append(plasmid_number)
+                        plasmid_number += 1
+
+                    # Get queries
+                    queries = self.get_queries(data)
+                    # Run queries
+                    for query, values in queries:
+                        self.logger.debug(f'POST query: {query}')
+                        # Add item
+                        await con.execute(query, *values)
+
+                    self.logger.debug(f'POST plasmid_numbers: {plasmid_numbers}')
+                    return aiohttp.web.Response(body=json.dumps({'plasmid_numbers': plasmid_numbers}), content_type='application/json', headers={'Query-status': 'OK'})
+
+        except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
+            self.logger.error(error)
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
 
 @routes.view('/plasmid/edit/{record_id}')
 class PlasmidEditHandler(generic.GenericRecordHandler, PlasmidBaseHandler):
@@ -127,15 +170,10 @@ class PlasmidRemoveHandler(generic.GenericRemoveHandler, PlasmidBaseHandler):
     queries = [f"DELETE FROM {PlasmidBaseHandler.schema}.item WHERE item_id={{record_id}};"]
 
 @routes.view('/plasmid/batch')
-class PlasmidBatchHandler(generic.GenericQueriesHandler, PlasmidBaseHandler):
+class PlasmidBatchHandler(PlasmidNewHandler):
     tpl = 'generic_edit.jinja'
+    form_path = 'js/batchform.js'
     form_class = 'BatchForm'
-
-    form = PlasmidNewHandler.form
-    form_json = PlasmidNewHandler.form_json
-
-    insert_queries = PlasmidNewHandler.insert_queries
-    get_queries = PlasmidNewHandler.get_queries
 
 @routes.view('/plasmid/option')
 class PlasmidOptionHandler(generic.GenericHandler, PlasmidBaseHandler):
