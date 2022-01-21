@@ -25,37 +25,6 @@ CREATE UNIQUE INDEX unique_number_suffix ON {schema}.item (plasmid_number,number
 CREATE UNIQUE INDEX unique_number ON {schema}.item (plasmid_number) WHERE number_suffix IS NULL;
 CREATE UNIQUE INDEX unique_name ON {schema}.item (name);
 
-CREATE OR REPLACE FUNCTION {schema}.insert_record(data json) RETURNS void AS $$
-DECLARE
-  oln integer;
-  osep text;
-  map_filename text;
-  x json;
-BEGIN
-  LOCK TABLE {schema}.item IN EXCLUSIVE MODE;
-  SELECT INTO oln MAX(plasmid_number) FROM {schema}.item;
-  IF oln is NULL THEN
-    oln := 0;
-  END IF;
-  FOR x IN SELECT * FROM json_array_elements(data)
-  LOOP
-    oln := oln + 1;
-    map_filename := x->>'map_filename';
-    IF CHAR_LENGTH(map_filename) > 0 THEN
-      IF SUBSTRING(map_filename, 1, 1) = '_' OR SUBSTRING(map_filename, 1, 1) = '-' OR SUBSTRING(map_filename, 1, 1) = ' ' THEN
-        osep := '';
-      ELSE
-        osep := '_';
-      END IF;
-        map_filename := CONCAT(CAST(oln AS text), osep, map_filename);
-    ELSE
-      map_filename := NULL;
-    END IF;
-    INSERT INTO {schema}.item (plasmid_number,name,author,description,sequence,sequence_insert,map_img,map_filename,antibiotic,linearize_sense,promoter_sense,vector,cloning_strategy,glycerol_stock,missing,date_insert) VALUES (oln, x->>'name', x->>'author', x->>'description', x->>'sequence', x->>'sequence_insert', x->>'map_img', map_filename, x->>'antibiotic', x->>'linearize_sense', x->>'promoter_sense', x->>'vector', x->>'cloning_strategy', (x->>'glycerol_stock')::boolean, (x->>'missing')::boolean, to_date(x->>'date_insert', 'YYYY-MM-DD'));
-  END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE TABLE {schema}.option (
     option_id serial not null,
     group_name varchar(50) not null,
