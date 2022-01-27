@@ -36,7 +36,7 @@ class PlasmidBaseHandler(base.BaseHandler):
                      'description': {'search_type': 'ilike', 'gui_type': 'textarea', 'required': False, 'label': 'Description', 'tooltip': '', 'class': 'seq-text', 'maxlength': '10000'},
                      'sequence': {'search_type': 'ilike', 'gui_type': 'textarea', 'required': True, 'label': 'Sequence', 'tooltip': '', 'class': 'seq-text', 'maxlength': '10000'},
                      'sequence_insert': {'search_type': 'ilike', 'gui_type': 'textarea', 'required': False, 'label': 'Insert', 'tooltip': '', 'class': 'seq-text', 'maxlength': '10000'},
-                     'map_img': {'search_type': 'data', 'gui_type': 'file', 'accept':'image/png', 'required': True, 'label': 'Map', 'tooltip': 'Image of plasmid map (PNG format)', 'maxsize':2097160},
+                     'map_img': {'search_type': 'data', 'gui_type': 'file', 'accept':'image/png', 'required': True, 'label': 'Map', 'tooltip': 'Image of plasmid map (PNG format)', 'maxsize':786000},
                      'map_filename': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'pattern': '[A-Za-z0-9._-]+', 'label': 'File name', 'tooltip': 'Name of Snapgene, ApE (...) file', 'button': {'label': 'Filename', 'click': 'plasmid_filename'}},
                      'antibiotic': {'search_type': 'ilike', 'gui_type': 'select_option_none', 'required': False, 'label': 'Antibiotic', 'tooltip': ''},
                      'linearize_sense': {'search_type': 'ilike', 'gui_type': 'text', 'required': False, 'label': 'Linearize', 'tooltip': 'Linearize sense'},
