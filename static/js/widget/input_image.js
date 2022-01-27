@@ -102,7 +102,8 @@ class InputImage {
                         input.value = ''
                     }
                 } else {
-                    input.domPreview.textContent = 'File is too large (Max 2MiB)'
+                    let maxMiB = (input.maxsize / 1024. / 1024.).toFixed(1)
+                    input.domPreview.textContent = `File is too large (Max ${maxMiB}MiB)`
                     input.value = ''
                 }
             }
