@@ -168,7 +168,7 @@ class GenericHandler(base.BaseHandler):
             results = await asyncio.gather(*tasks)
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
         self.logger.debug(f'POST out: {results[0]}')
         return aiohttp.web.Response(body=results[0], content_type='application/json', headers={'Query-status': 'OK'})
@@ -218,7 +218,7 @@ class GenericQueriesHandler(base.BaseHandler):
             results = await asyncio.gather(*tasks)
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
         self.logger.debug(f'POST out: {results}')
         return aiohttp.web.Response(body=json.dumps(record2dict(results)), content_type='application/json', headers={'Query-status': 'OK'})
@@ -268,7 +268,7 @@ class GenericRecordHandler(base.BaseHandler):
                 results = await asyncio.gather(*tasks)
             except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
                 self.logger.error(error)
-                return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+                return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
         self.logger.debug(f'POST out: {results}')
         return aiohttp.web.Response(body=json.dumps(record2dict(results)), content_type='application/json', headers={'Query-status': 'OK'})
@@ -286,7 +286,7 @@ class GenericGetHandler(base.BaseHandler):
             results = await asyncio.gather(*tasks)
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
         self.logger.debug(f'GET out: {results}')
         return aiohttp.web.Response(body=join_results(results), content_type='application/json', headers={'Query-status': 'OK'})
@@ -304,6 +304,6 @@ class GenericRemoveHandler(base.BaseHandler):
             results = await asyncio.gather(*tasks)
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
         return aiohttp.web.Response(text='OK', headers={'Query-status': 'OK'})

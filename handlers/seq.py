@@ -523,7 +523,7 @@ class SeqAssignHandler(generic.GenericQueriesHandler, SeqBaseHandler):
 
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
 @routes.view('/seq/project/fulledit/{record_id}')
 class SeqFullProjectHandler(generic.GenericRecordHandler, SeqBaseHandler):

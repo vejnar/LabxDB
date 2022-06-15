@@ -139,7 +139,7 @@ class OligoNewHandler(generic.GenericQueriesHandler, OligoBaseHandler):
 
         except (asyncpg.PostgresWarning, asyncpg.PostgresError) as error:
             self.logger.error(error)
-            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error)})
+            return aiohttp.web.Response(text=str(error), headers={'Query-status': str(error).replace('\n', ' ')})
 
 @routes.view('/oligo/edit/{record_id}')
 class OligoEditHandler(generic.GenericRecordHandler, OligoBaseHandler):
