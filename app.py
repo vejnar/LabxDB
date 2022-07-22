@@ -87,11 +87,6 @@ def main(argv=None):
     # Logging
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
-        try:
-            import aiohttp_autoreload
-            aiohttp_autoreload.start()
-        except:
-            print('Live-reload failed')
 
     # Application
     app = create_app()
