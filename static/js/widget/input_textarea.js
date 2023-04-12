@@ -6,7 +6,7 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at https://www.mozilla.org/MPL/2.0/.
 
- Copyright (C) 2018-2022 Charles E. Vejnar
+ Copyright © 2018 Charles E. Vejnar
 */
 
 export { Textarea }
