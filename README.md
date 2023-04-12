@@ -14,4 +14,4 @@ See [tags](/../../tags) page.
 
 *LabxDB* is distributed under the Mozilla Public License Version 2.0 (see /LICENSE).
 
-Copyright © 2018-2022 Charles E. Vejnar
+Copyright © 2018-2023 Charles E. Vejnar
