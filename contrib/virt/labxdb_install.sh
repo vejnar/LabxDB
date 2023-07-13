@@ -20,17 +20,14 @@ if [ -z "$TARGET" ]; then
 fi
 
 if [ "$NAME" = "Arch Linux" ] ; then
-    pacman -Sy --noconfirm python python-pip postgresql
+    pacman -Sy --noconfirm python python-pip python-aiohttp python-asyncpg postgresql libxml2
+    pip3 install aiohttp-jinja2
 fi
 if [ "$NAME" = "Debian GNU/Linux" ] || [ "$NAME" = "Ubuntu" ]; then
     apt-get update
-    apt-get install -y python3 python3-setuptools python3-pip postgresql
+    apt-get install -y python3 python3-setuptools python3-pip python3-aiohttp python3-asyncpg python3-aiohttp-jinja2 postgresql libxml2-utils
     apt-get clean
 fi
-
-pip3 install aiohttp
-pip3 install aiohttp-jinja2
-pip3 install asyncpg
 
 if [ ! -d "$TARGET" ]; then
     mkdir $TARGET
@@ -38,19 +35,23 @@ fi
 
 cd $TARGET
 
+get_labxdb_version() {
+    echo $(wget -O - -q https://git.sr.ht/~vejnar/LabxDB/refs/rss.xml | \
+    xmllint --xpath '//item[1]/title/text()' rss.xml - 2> /dev/null)
+}
+
 # Get latest tag
 if [ -z "$LABXDB_TAG" ]; then
-    LABXDB_TAG=$(wget -qO- https://gitlab.com/api/v4/projects/19039172/repository/tags | cut -d '"' -f 4)
+    LABXDB_TAG="$(get_labxdb_version)"
     echo "Found tag $LABXDB_TAG"
 fi
-wget --no-verbose "https://gitlab.com/vejnar/labxdb/-/archive/$LABXDB_TAG/labxdb-$LABXDB_TAG.tar.gz"
-tar -x -z --strip-components=1 -f labxdb-$LABXDB_TAG.tar.gz
+wget --no-verbose "https://git.sr.ht/~vejnar/LabxDB/archive/${LABXDB_TAG}.tar.gz"
+tar -x -z --strip-components=1 -f $LABXDB_TAG.tar.gz
 
 if [ "$NAME" = "Arch Linux" ] ; then
     chage -E -1 -M -1 postgres
     su - postgres -c "initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'"
-    systemctl start postgresql
-    systemctl enable postgresql
+    systemctl enable --now postgresql
 fi
 if [ "$NAME" = "Debian GNU/Linux" ] || [ "$NAME" = "Ubuntu" ] ; then
     fpg=$(ls -1 /etc/postgresql/*/main/pg_hba.conf | sort | head -1)
@@ -111,6 +112,5 @@ StandardError=journal
 WantedBy=multi-user.target
 EOF
 
-    systemctl start http_labxdb
-    systemctl enable http_labxdb
+    systemctl enable --now http_labxdb
 fi
