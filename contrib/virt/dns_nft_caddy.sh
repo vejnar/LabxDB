@@ -36,6 +36,7 @@ echo "==> Install Caddy"
 cd /etc/caddy
 wget --no-verbose https://git.sr.ht/~vejnar/LabxDB/blob/main/contrib/virt/caddy.json
 
+# Update Caddy config
 if [ -n "$DOMAIN" ]; then
     sed -i "s/labxdb.duckdns.org/$DOMAIN/" /etc/caddy/caddy.json
 fi
@@ -46,5 +47,14 @@ if [ "$ACME_STAGING" = "no" ]; then
     sed -i "s/acme-staging-v/acme-v/" /etc/caddy/caddy.json
 fi
 
-# Config systemd service
+# Config systemd service for Caddy
+mkdir /etc/systemd/system/caddy.service.d
+cat << EOF > /etc/systemd/system/caddy.service.d/override.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/caddy run --environ --config /etc/caddy/caddy.json
+ExecReload=
+ExecReload=/usr/bin/caddy reload --config /etc/caddy/caddy.json --force
+EOF
+
 systemctl enable --now caddy
