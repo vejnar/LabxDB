@@ -67,6 +67,8 @@ psql -U postgres -c "CREATE ROLE lab WITH LOGIN ENCRYPTED PASSWORD 'labxdb';"
 
 cd contrib/databases/sql
 
+./tpl_sql.py -s -a schema,fish -u postgres create_antibody_tables.sql
+
 ./tpl_sql.py -s -a schema,mutant -u postgres create_mutant_tables.sql
 psql -U postgres -c "\COPY mutant.gene FROM '../data/mutant_gene.csv' DELIMITER ',' CSV HEADER; SELECT setval('mutant.gene_gene_id_seq', max(gene_id)) FROM mutant.gene;"
 psql -U postgres -c "\COPY mutant.allele FROM '../data/mutant_allele.csv' DELIMITER ',' CSV HEADER; SELECT setval('mutant.allele_allele_id_seq', max(allele_id)) FROM mutant.allele;"
