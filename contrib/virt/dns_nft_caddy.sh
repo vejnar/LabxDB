@@ -61,3 +61,6 @@ EOF
 systemctl daemon-reload
 
 systemctl enable --now caddy
+
+# Apply override
+systemctl restart caddy
