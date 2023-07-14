@@ -57,4 +57,7 @@ ExecReload=
 ExecReload=/usr/bin/caddy reload --config /etc/caddy/caddy.json --force
 EOF
 
+# Load override
+systemctl daemon-reload
+
 systemctl enable --now caddy
